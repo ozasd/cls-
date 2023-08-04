@@ -1,0 +1,19 @@
+# pack麥亂
+node_modules
+
+# resource-影片資源資料夾
+resource
+# 影片資源目錄為resource
+# 影片的完整路徑：resource/LV_?/課程名稱/第幾堂.mp4
+# EX. 我今天要上LV_P的roblox第10堂-->resource/LV_P/roblox/10.mp4
+# 屆時名稱與DB同步
+# 學生 onlineCourse.ejs 20:ejs 的 src='../resource/LV_<%= course_lv %>/<%= class_id %>.mkv' 的影片路徑
+# resource 是存放影片的的地方 ， LV_<%= course_lv %> 代表 LV_1 => 等級 P 的課程資料夾， 最後將LV_P的所有影片存入LV_1的資料夾中，命名規則為:class_id.mkv
+
+# user-upload-使用者上傳
+user-upload
+# avatar-頭像資源資料夾
+# 命名規則為：user_id.jpg/png等
+# EX. user=10之使用者的頭像上傳位置--->user-upload/avatar/10.jpg
+
+# 其餘日後擴充
