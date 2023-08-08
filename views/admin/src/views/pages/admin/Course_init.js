@@ -113,10 +113,22 @@ export function Course_init() {
     }
     const update = (i) => {
         var std_id = document.getElementById("std_id" + i).textContent
-
         var course_id = document.getElementById("course_id" + i).textContent
         var status = document.getElementById("kind" + i).value
         var count = document.getElementById("count" + i).textContent
+        var class_id = null
+        Array.from(Course_history['std_id']).forEach((item,i)=>{
+            if (item == std_id && Course_history['course_id'][i] == course_id){
+                class_id = Course_history['class_id'][i]
+            };
+        })
+        if(class_id == null){
+            alert('修改發生錯誤 !')
+            return 0
+        }
+        if(count < 10){
+            count = "0"+count
+        }
         var href = path + '/api-course_update'
         fetch(href, {
             method: 'POST',
@@ -124,6 +136,7 @@ export function Course_init() {
             body: new URLSearchParams({
                 "std_id": std_id,
                 "course_id": course_id,
+                "class_id":class_id.slice(0, -2)+count,
                 "type": status,
                 "count": count,
 
@@ -168,7 +181,7 @@ export function Course_init() {
 
     return (
         <>
-            <div className="row  shadow p-1">
+            <div className="row  shadow p-1 justify-content-center">
                 <div className="col-md-11">
                     <h1 className="fs-1 fw-bold text-center">新 舊 生 添 加 課 程</h1>
                     <div className="row justify-content-around my-3">
@@ -255,7 +268,7 @@ export function Course_init() {
                                         <p className="fs-4 text-center my-3"> {Course_history.id[i]}</p>
                                     </div> */}
                                     <div className="col-md-2">
-                                        <p className="fs-5 text-center my-2">學生 : {Course_history.fullname[i]}</p>
+                                        <p className="fs-5 text-center my-2">學生 : {Course_history.fullname[i].slice(0,6)}</p>
                                         <p id={"std_id" + i} style={{ display: "none" }}>{Course_history.std_id[i]}</p>
                                     </div>
                                     <div className="col-md-1">
@@ -279,12 +292,12 @@ export function Course_init() {
                                     </div>
                                     <div className="col-md-2">
                                         <div className="row my-1">
-                                            <button onClick={()=>{minus(i)}} className="col-md-3 btn btn-outline-secondary">一</button>
-                                            <span className="col-md-6 fs-5 text-center my-2">集數 :
+                                            <button onClick={()=>{minus(i)}} className="col-md-3 btn btn-sm  btn-outline-secondary">一</button>
+                                            <span className="col-md-6 fs-5 text-center my-2">
                                                 <span id={"count" + i}>{Course_history.count[i]}</span>
-
+                                                集
                                             </span>
-                                            <button onClick={()=>{add(i)}} className="col-md-3 btn btn-outline-secondary">+</button>
+                                            <button onClick={()=>{add(i)}} className="col-md-3 btn btn-sm   btn-outline-secondary">+</button>
 
                                         </div>
 

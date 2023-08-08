@@ -132,10 +132,10 @@ const course = {
     },
     course_update:(req,res) =>{
         console.log("course_update")
-        // console.log(req.body)
+        console.log(req.body)
         var sql = `
         update course_history
-        set count = '${req.body.count}' , type = '${req.body.type}'
+        set count = '${req.body.count}' , type = '${req.body.type}',class_id = '${req.body.class_id}'
         where std_id = '${req.body.std_id}'
         AND course_id = '${req.body.course_id}'
         ` 

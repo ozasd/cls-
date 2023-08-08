@@ -10,7 +10,7 @@ export function Index(){
 
             
           </div>
-          <div className='col-md-10 bg-light text-dark vh-100 min-vh-100' style={{overflow:"auto"}}>
+          <div className='col-md-10 bg-light text-dark vh-100 min-vh-100 ' style={{overflow:"auto"}}>
             <Outlet/>
   
           </div>

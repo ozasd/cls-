@@ -78,7 +78,7 @@ export function Login() {
         <>
             {/* <h1>Login Page</h1> */}
             <div className="row vh-100 bg-light justify-content-center align-content-center">
-                <div className="col-md-3  bg-white rounded-3 shadow border-top border-primary border-5 " style={{ height: "65%" }}>
+                <div className="col-md-3 p-2  bg-white rounded-3 shadow border-top border-primary border-5 " style={{ minHeight: "65%" }}>
                     <div className="row h-100 gx-1 justify-content-center align-content-center ">
                         <div className="col-md-10 ">
                             <img className="my-2 w-50" alt='logo' src='https://www.doing-housework.com/store_image/hct369/L167306847729.png' />

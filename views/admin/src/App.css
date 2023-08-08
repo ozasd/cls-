@@ -1,4 +1,8 @@
 .horver-success:hover{
   background:  rgb(25, 135, 84);
+  border-radius: 15px;
 
+}
+.bg-secondary2{
+  background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
 }
