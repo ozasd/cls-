@@ -6,6 +6,30 @@ const jwt = require('jsonwebtoken');
 
 
 const course = {
+    course_remove: (req, res) => {
+        try {
+            var sql = `
+        DELETE FROM course_history 
+        WHERE std_id = '${req.body.std_id}'
+        AND course_id = '${req.body.course_id}'
+        `
+            // console.log(sql)
+            con.query(sql, (err, rows) => {
+                if (!err) {
+                    res.json({ "狀態": "成功", "訊息": "已將學生刪除 !" })
+
+                } else {
+                    res.json({ "狀態": "失敗", "訊息": "發生了不明意外，再刪除時發生了錯誤 !" })
+                }
+            })
+
+        } catch (error) {
+            res.json({ "狀態": "失敗", "訊息": "發生了不明意外，再刪除時發生了錯誤 !" })
+
+        }
+
+
+    },
     course_history: (req, res) => {
 
         sql = `
@@ -13,6 +37,7 @@ const course = {
         FROM hct_cls.course_history,cls_user,course_list
         WHERE course_history.std_id = cls_user.user_id
         AND course_list.course_id = course_history.course_id
+
         `
         var data = req.body
 
@@ -54,7 +79,6 @@ const course = {
                     course_history.count.push(item.count)
                     course_history.type.push(item.type)
                     course_history.duration.push(item.duration)
-
                 })
                 res.json(course_history)
             }
@@ -113,9 +137,7 @@ const course = {
                         var sql = `
                                 INSERT INTO course_history(std_id,course_id,class_id,count,type)
                                 VALUES ('${req.body.std_id}','${req.body.course_id}','${req.body.class_id}',${1},'${req.body.type}')
-                        
                                 `
-
                         con.query(sql, (err, rows) => {
                             if (err) {
                                 console.log(err)
@@ -130,16 +152,14 @@ const course = {
             }
         })
     },
-    course_update:(req,res) =>{
+    course_update: (req, res) => {
         console.log("course_update")
-        console.log(req.body)
         var sql = `
         update course_history
         set count = '${req.body.count}' , type = '${req.body.type}',class_id = '${req.body.class_id}'
         where std_id = '${req.body.std_id}'
         AND course_id = '${req.body.course_id}'
-        ` 
-
+        `
         con.query(sql, (err, rows) => {
             if (err) {
                 console.log(err)

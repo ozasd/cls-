@@ -160,7 +160,8 @@ export function Course_builder() {
             <div className="row h-100 justify-content-center align-content-center bg-secondary2">
                 <div className="col-md-9 rounded-3 h-75 shadow border-top border-primary border-5 ">
                     <div className='row h-25 border-bottom align-content-center'>
-                        <h1 className='text-center fw-bold my-3'>準備生成這週課表</h1>
+                        <h1 className='text-center fw-bold my-3'>準備生成下週課表</h1>
+                        <p className='text-secondary fw-bold m-0  border-start border-3 border-success'>新增學生補課</p>
                     </div>
                     <div className="row h-50 overflow-auto">
                         <div className="col-md-12 ">
@@ -191,9 +192,9 @@ export function Course_builder() {
 
                         </div>
                     </div>
-                    <div className="row h-25 border-top justify-content-between ">
-                        <div className="col-md-12">
-                            <div className="row h-100 justify-content-center align-content-center  mt-2  ">
+                    <div className="row h-25  justify-content-between ">
+                        <div className="col-md-12 ">
+                            <div className="row border-top  h-100 justify-content-center align-content-center  mt-2  ">
                                 <div className="col-md-2">
                                     <div className="row gx-1">
                                         <select onChange={(e) => { setstd(e.target.value) }} className="btn border" >
@@ -260,7 +261,7 @@ export function Course_builder() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-md-12">
+                        <div className="col-md-12 ">
                             <div className="row h-100 justify-content-center align-content-center">
                                 <button onClick={() => { builder() }} className="col-md-4 btn btn-success rounded-pill"> 下一步</button>
                             </div>

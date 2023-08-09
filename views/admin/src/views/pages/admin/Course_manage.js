@@ -217,11 +217,15 @@ export function Course_manage() {
 
                             </div>
                             <div className='col-md-2 d-flex justify-content-center fs-5 align-items-center '>
-                                {class_data['class_title'][i].slice(0, 15)}
-                                <br/>
+                                {class_data['class_title'][i] != null ? (
+                                    class_data['class_title'][i].slice(0, 15)
+                                ) : (
+                                    <span className="text-danger">抓取課程失敗 !<br/>(新增課程時出現錯誤)</span>
+                                )}
+                                <br />
                                 <input id={'course_id' + i} className="form-control d-none" placeholder={"修改當前課號:" + class_data['class_id'][i]} />
 
-                                
+
                             </div>
                             <div className='col-md-2 d-flex justify-content-center py-2'>
                                 {teacher['nickname'] != null &&
@@ -308,7 +312,7 @@ export function Course_manage() {
                     </div>
                 )}
 
-                
+
 
 
 
@@ -324,36 +328,36 @@ export function Course_manage() {
 
     }
 
-    
+
     const WeekDate = (e) => {
         function generateThisWeekDates() {
             const today = new Date();
             const startDayOfWeek = new Date(today);
             const dayOfWeek = today.getDay(); // 获取今天是星期几
-          
+
             // 计算第一天（星期一）的日期
             if (dayOfWeek !== 1) {
-              // 如果今天不是星期一，就将日期调整到本周星期一
-              startDayOfWeek.setDate(today.getDate() - dayOfWeek + 1);
+                // 如果今天不是星期一，就将日期调整到本周星期一
+                startDayOfWeek.setDate(today.getDate() - dayOfWeek + 1);
             }
-        
+
             const oneDayMilliseconds = 24 * 60 * 60 * 1000; // Number of milliseconds in one day
             const weekDates = [];
             const weekDates2 = [];
             for (let i = 0; i < 7; i++) {
-              const currentDate = new Date(startDayOfWeek.getTime() + i * oneDayMilliseconds);
-              var date = (currentDate.toISOString().slice(0, 10).split('-'))
-              weekDates.push(date[1]+'/'+date[2]);
-              weekDates2.push(date[0]+'-'+date[1]+'-'+date[2]);
-    
+                const currentDate = new Date(startDayOfWeek.getTime() + i * oneDayMilliseconds);
+                var date = (currentDate.toISOString().slice(0, 10).split('-'))
+                weekDates.push(date[1] + '/' + date[2]);
+                weekDates2.push(date[0] + '-' + date[1] + '-' + date[2]);
+
             }
-          
-            return [weekDates,weekDates2];
-          }
-    
+
+            return [weekDates, weekDates2];
+        }
+
 
         const weekDate = generateThisWeekDates();
-        
+
         var week = ['一', '二', '三', '四', '五', '六', '日']
         return (
             <>

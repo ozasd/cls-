@@ -147,6 +147,28 @@ export function Course_init() {
                 Builder()
             })
     }
+
+    const remove = (i) =>{
+        var std_id = document.getElementById("std_id" + i).textContent
+        var course_id = document.getElementById("course_id" + i).textContent
+        console.log(std_id,course_id)
+        var href = path + '/api-course_remove'
+        fetch(href, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+                "std_id": std_id,
+                "course_id": course_id,
+                
+
+            })
+        }).then(response => response.json())
+            .then(data => {
+                alert(data["訊息"])
+                Builder()
+            })
+
+    }
     const add = (i) => {
         var count = document.getElementById("count" + i).textContent
         count = parseInt(count) + 1
@@ -271,7 +293,8 @@ export function Course_init() {
                                         <p className="fs-5 text-center my-2">學生 : {Course_history.fullname[i].slice(0,6)}</p>
                                         <p id={"std_id" + i} style={{ display: "none" }}>{Course_history.std_id[i]}</p>
                                     </div>
-                                    <div className="col-md-1">
+                                    {/* 一個Icon 顯示可有可無 */}
+                                    {/* <div className="col-md-1">
                                         {Course_history.type[i] === '已完成' ? (
                                             <p className="fs-5 text-center my-2">✅</p>
                                         ) : (
@@ -283,21 +306,22 @@ export function Course_init() {
                                                 )}
                                             </>
                                         )}
-                                    </div>
+                                    </div> */}
 
                                     <div className="col-md-3">
                                         <p className="fs-5 text-center my-2">{Course_history.course_name[i]}</p>
                                         <p id={"course_id" + i} style={{ display: "none" }}>{Course_history.course_id[i]}</p>
 
                                     </div>
-                                    <div className="col-md-2">
+                                    <div className="col-md-3">
                                         <div className="row my-1">
-                                            <button onClick={()=>{minus(i)}} className="col-md-3 btn btn-sm  btn-outline-secondary">一</button>
-                                            <span className="col-md-6 fs-5 text-center my-2">
+                                            <button onClick={()=>{minus(i)}} className="col-md-2 btn btn-sm  btn-outline-secondary">一</button>
+                                            <span className="col-md-8 fs-5 text-center my-2">
+                                                下一堂: 
                                                 <span id={"count" + i}>{Course_history.count[i]}</span>
                                                 集
                                             </span>
-                                            <button onClick={()=>{add(i)}} className="col-md-3 btn btn-sm   btn-outline-secondary">+</button>
+                                            <button onClick={()=>{add(i)}} className="col-md-2 btn btn-sm   btn-outline-secondary">+</button>
 
                                         </div>
 
@@ -314,7 +338,7 @@ export function Course_init() {
                                         <button onClick={() => { update(i) }} className="form-control my-2 btn btn-primary rounded-pill">修改</button>
                                     </div>
                                     <div className="col-md-1">
-                                        <button onClick={() => { alert('暫不開放') }} className="form-control my-2 btn btn-danger rounded-pill">刪除</button>
+                                        <button onClick={() => { remove(i) }} className="form-control my-2 btn btn-danger rounded-pill">刪除</button>
 
                                     </div>
                                 </div>
