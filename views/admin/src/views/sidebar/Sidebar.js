@@ -13,7 +13,7 @@ export function Sidebar() {
         <>
             <div className='row  ' style={{ height: "90%" }}>
                 <div className='col-md-12 m-0  p-0  mt-3'>
-                    <Link to='/' className=' text-decoration-none'>
+                    <Link to='/' onClick={() => { setstatus(0) }} className=' text-decoration-none'>
                         <img alt='logo' className='img-fluid' src='https://www.doing-housework.com/store_image/hct369/L167306847729.png'></img>
                     </Link>
                     <p className='fw-bold p-2 fs-5 text-warning pb-0 m-0'>H C T 電腦程式教育中心</p>
