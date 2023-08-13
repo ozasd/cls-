@@ -6,9 +6,9 @@ import { useState } from 'react'
 export function Sidebar() {
     const dispatch = useDispatch()
     const nickname = useSelector((e) => (e.Data.user))
-    const [status , setstatus] = useState()
+    const [status, setstatus] = useState(0)
 
-    
+
     return (
         <>
             <div className='row  ' style={{ height: "90%" }}>
@@ -19,15 +19,49 @@ export function Sidebar() {
                     <p className='fw-bold p-2 fs-5 text-warning pb-0 m-0'>H C T 電腦程式教育中心</p>
                     <p className='fw-bold p-2 fs-6 text-secondary pt-0 '>課程後臺管理系統</p>
                     <hr />
-                    <Link to='/' className=' text-decoration-none'>
-                        <p className='fs-6   horver-success text-white-50 py-2 ps-3 border-start border-4 border-success '>當週學生課表管理</p>
-                    </Link>
-                    <Link to='/Course_init' className=' text-decoration-none'>
-                        <p className='fs-6  horver-success text-white-50 py-2 ps-3 border-start border-4 border-success '>排課總管理</p>
-                    </Link>
-                    <Link to='/Course_builder'  className=' text-decoration-none'>
-                        <p className='fs-6  horver-success text-white-50 py-2 ps-3 border-start border-4 border-success '>下週課表生成</p>
-                    </Link>
+                    {status === 0 ? (
+                        <>
+                            <Link to='/' onClick={() => { setstatus(0) }} className=' text-decoration-none'>
+                                <p className='fs-6    text-white py-2 ps-3   bg-success' style={{ borderRadius: "15px" }}>當週學生課表管理</p>
+                            </Link>
+                        </>
+                    ) : (
+                        <>
+                            <Link to='/' onClick={() => { setstatus(0) }} className=' text-decoration-none'>
+                                <p className='fs-6   horver-success text-white-50 py-2 ps-3 border-start border-4 border-success '>當週學生課表管理</p>
+                            </Link>
+                        </>
+                    )}
+                    {status === 1 ? (
+                        <>
+                            <Link to='/Course_init' onClick={() => { setstatus(1) }} className=' text-decoration-none' >
+                                <p className='fs-6  text-white py-2 ps-3   bg-success' style={{ borderRadius: "15px" }}>排課總管理</p>
+                            </Link>
+                        </>
+
+                    ) : (
+                        <>
+                            <Link to='/Course_init' onClick={() => { setstatus(1) }} className=' text-decoration-none'>
+                                <p className='fs-6  horver-success text-white-50 py-2 ps-3 border-start border-4 border-success '>排課總管理</p>
+                            </Link>
+                        </>
+
+                    )}
+                    {status === 3 ? (
+                        <>
+                            <Link to='/Course_builder' onClick={() => { setstatus(3) }} className=' text-decoration-none'>
+                                <p className='fs-6  text-white py-2 ps-3   bg-success' style={{ borderRadius: "15px" }}>下週課表生成</p>
+                            </Link>
+                        </>
+                    ) : (
+                        <>
+                            <Link to='/Course_builder' onClick={() => { setstatus(3) }} className=' text-decoration-none'>
+                                <p className='fs-6  horver-success text-white-50 py-2 ps-3 border-start border-4 border-success '>下週課表生成</p>
+                            </Link>
+                        </>
+                    )}
+
+                    
                 </div>
             </div>
             <div className='row gx-1 border-top p-1  align-content-center' style={{ height: "10%" }}>

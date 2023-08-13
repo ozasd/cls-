@@ -9,10 +9,10 @@ const course = {
     course_remove: (req, res) => {
         try {
             var sql = `
-        DELETE FROM course_history 
-        WHERE std_id = '${req.body.std_id}'
-        AND course_id = '${req.body.course_id}'
-        `
+            DELETE FROM course_history 
+            WHERE std_id = '${req.body.std_id}'
+            AND course_id = '${req.body.course_id}'
+            `
             // console.log(sql)
             con.query(sql, (err, rows) => {
                 if (!err) {
@@ -31,16 +31,15 @@ const course = {
 
     },
     course_history: (req, res) => {
+        console.log('course_history')
 
         sql = `
         SELECT id,std_id,cls_user.fullname,class_id,course_history.course_id,course_name,count,type,duration
         FROM hct_cls.course_history,cls_user,course_list
         WHERE course_history.std_id = cls_user.user_id
         AND course_list.course_id = course_history.course_id
-
         `
         var data = req.body
-
         if (data.searach_course != '') {
             sql += `AND course_name like "%${data.searach_course}%" `
         }

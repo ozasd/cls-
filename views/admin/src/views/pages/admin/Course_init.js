@@ -5,26 +5,29 @@ const path = ipconfig.webhost + ":" + ipconfig.port
 
 export function Course_init() {
 
-
+    // 下面因為無法搭配 enter 所以先暫停使用
     const [searach_course, setsearach_course] = useState("")
     const [searach_name, setsearach_name] = useState("")
     const [searach_type, setsearach_type] = useState("")
 
     const Builder = async () => {
-        var href = path + '/api-course_history'
 
+        var course = document.getElementById('course').value
+        var name = document.getElementById('name').value
+        var type = document.getElementById('type').value
+
+        var href = path + '/api-course_history'
         await fetch(href, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({
-                "searach_course": searach_course,
-                "searach_name": searach_name,
-                "searach_type": searach_type
+                "searach_course": course,
+                "searach_name": name,
+                "searach_type": type
             })
         }).then(response => response.json())
             .then(data => {
                 setCourse_history(data)
-                console.log(data)
 
             })
 
@@ -54,7 +57,7 @@ export function Course_init() {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({
-                
+
             })
         }).then(response => response.json())
             .then(data => {
@@ -117,17 +120,17 @@ export function Course_init() {
         var status = document.getElementById("kind" + i).value
         var count = document.getElementById("count" + i).textContent
         var class_id = null
-        Array.from(Course_history['std_id']).forEach((item,i)=>{
-            if (item == std_id && Course_history['course_id'][i] == course_id){
+        Array.from(Course_history['std_id']).forEach((item, i) => {
+            if (item == std_id && Course_history['course_id'][i] == course_id) {
                 class_id = Course_history['class_id'][i]
             };
         })
-        if(class_id == null){
+        if (class_id == null) {
             alert('修改發生錯誤 !')
             return 0
         }
-        if(count < 10){
-            count = "0"+count
+        if (count < 10) {
+            count = "0" + count
         }
         var href = path + '/api-course_update'
         fetch(href, {
@@ -136,7 +139,7 @@ export function Course_init() {
             body: new URLSearchParams({
                 "std_id": std_id,
                 "course_id": course_id,
-                "class_id":class_id.slice(0, -2)+count,
+                "class_id": class_id.slice(0, -2) + count,
                 "type": status,
                 "count": count,
 
@@ -148,10 +151,10 @@ export function Course_init() {
             })
     }
 
-    const remove = (i) =>{
+    const remove = (i) => {
         var std_id = document.getElementById("std_id" + i).textContent
         var course_id = document.getElementById("course_id" + i).textContent
-        console.log(std_id,course_id)
+        console.log(std_id, course_id)
         var href = path + '/api-course_remove'
         fetch(href, {
             method: 'POST',
@@ -159,7 +162,7 @@ export function Course_init() {
             body: new URLSearchParams({
                 "std_id": std_id,
                 "course_id": course_id,
-                
+
 
             })
         }).then(response => response.json())
@@ -172,10 +175,10 @@ export function Course_init() {
     const add = (i) => {
         var count = document.getElementById("count" + i).textContent
         count = parseInt(count) + 1
-        if(count > Course_history.duration[i]){
-            var text = "無法新增，因為最大集數為:" + Course_history.duration[i] 
+        if (count > Course_history.duration[i]) {
+            var text = "無法新增，因為最大集數為:" + Course_history.duration[i]
             alert(text)
-        }else{
+        } else {
             document.getElementById("count" + i).innerText = count
 
         }
@@ -186,15 +189,29 @@ export function Course_init() {
     const minus = (i) => {
         var count = document.getElementById("count" + i).textContent
         count = parseInt(count) - 1
-        if(count < 1){
-            var text = "無法減少，因為最大集數為: 1 "  
+        if (count < 1) {
+            var text = "無法減少，因為最大集數為: 1 "
             alert(text)
-        }else{
+        } else {
             document.getElementById("count" + i).innerText = count
 
         }
 
     }
+    useEffect(() => {
+        const keyDownHandler = event => {
+            console.log('User pressed: ', event.key);
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                Builder()
+            }
+        };
+        document.addEventListener('keydown', keyDownHandler);
+
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [])
 
 
 
@@ -203,21 +220,24 @@ export function Course_init() {
 
     return (
         <>
+
             <div className="row  shadow p-1 justify-content-center">
                 <div className="col-md-11">
-                    <h1 className="fs-1 fw-bold text-center">新 舊 生 添 加 課 程</h1>
+                    <h1 className="fs-1 fw-bold text-center text-green">新 舊 生 添 加 課 程</h1>
                     <div className="row justify-content-around my-3">
                         <div className="col-md-2">
                             <button onClick={() => { if (display === "None") { setdisplay("Block") } else { setdisplay("None") } }} className="form-control btn btn-secondary rounded-pill">新增課程</button>
                         </div>
                         <div className="col-md-2">
-                            <input onChange={(e) => { setsearach_course(e.target.value) }} className="form-control" placeholder="搜尋課程"></input>
+                            <input id='course' onInput={(e) => { setsearach_course(e.target.value) }} className="form-control" placeholder="搜尋課程"></input>
                         </div>
                         <div className="col-md-2">
-                            <input onChange={(e) => { setsearach_name(e.target.value) }} className="form-control" placeholder="搜尋學生"></input>
+                            {/* <input onChange={(e) => { setsearach_name(e.target.value) }} className="form-control" placeholder="搜尋學生"></input> */}
+                            <input id='name' onInput={(e) => { setsearach_name(e.target.value) }} className="form-control" placeholder="搜尋學生"></input>
+
                         </div>
                         <div className="col-md-2">
-                            <select onChange={(e) => { setsearach_type(e.target.value) }} className="form-select">
+                            <select id='type' onChange={(e) => { setsearach_type(e.target.value) }} className="form-select">
                                 <option value={""}>請選擇</option>
                                 <option>已完成</option>
                                 <option>進行中</option>
@@ -225,7 +245,7 @@ export function Course_init() {
                             </select>
                         </div>
                         <div className='col-md-2 d-flex justify-content-center'>
-                            <button onClick={() => { Builder() }} className='form-control btn btn-primary rounded-pill d-flex align-content-center justify-content-center'>
+                            <button onClick={() => { Builder() }} className='form-control btn btn bg-blue rounded-pill d-flex align-content-center justify-content-center'>
                                 課程搜尋
                                 <span className="material-symbols-outlined mx-1">
                                     search
@@ -285,16 +305,16 @@ export function Course_init() {
                     {Course_history.id.map((item, i) => (
                         <div key={i} className="row  justify-content-center">
                             <div className="col-md-11">
-                                <div className="row border my-3 rounded-pill  item-hover p-2 py-3">
+                                <div className="row border my-2 rounded-pill  item-hover p-2 py-3">
                                     {/* <div className="col-md-1">
                                         <p className="fs-4 text-center my-3"> {Course_history.id[i]}</p>
                                     </div> */}
-                                    <div className="col-md-2">
-                                        <p className="fs-5 text-center my-2">學生 : {Course_history.fullname[i].slice(0,6)}</p>
+                                    <div className="col-md-2 ps-5">
+                                        <p className="fs-5  my-2">學生 : {Course_history.fullname[i].slice(0, 6)}</p>
                                         <p id={"std_id" + i} style={{ display: "none" }}>{Course_history.std_id[i]}</p>
                                     </div>
                                     {/* 一個Icon 顯示可有可無 */}
-                                    {/* <div className="col-md-1">
+                                    <div className="col-md-1">
                                         {Course_history.type[i] === '已完成' ? (
                                             <p className="fs-5 text-center my-2">✅</p>
                                         ) : (
@@ -306,22 +326,22 @@ export function Course_init() {
                                                 )}
                                             </>
                                         )}
-                                    </div> */}
+                                    </div>
 
-                                    <div className="col-md-3">
+                                    <div className="col-md-2">
                                         <p className="fs-5 text-center my-2">{Course_history.course_name[i]}</p>
                                         <p id={"course_id" + i} style={{ display: "none" }}>{Course_history.course_id[i]}</p>
 
                                     </div>
                                     <div className="col-md-3">
                                         <div className="row my-1">
-                                            <button onClick={()=>{minus(i)}} className="col-md-2 btn btn-sm  btn-outline-secondary">一</button>
+                                            <button onClick={() => { minus(i) }} className="col-md-2 btn btn-sm  btn-outline-secondary">一</button>
                                             <span className="col-md-8 fs-5 text-center my-2">
-                                                下一堂: 
+                                                下一堂:
                                                 <span id={"count" + i}>{Course_history.count[i]}</span>
                                                 集
                                             </span>
-                                            <button onClick={()=>{add(i)}} className="col-md-2 btn btn-sm   btn-outline-secondary">+</button>
+                                            <button onClick={() => { add(i) }} className="col-md-2 btn btn-sm   btn-outline-secondary">+</button>
 
                                         </div>
 
@@ -338,7 +358,7 @@ export function Course_init() {
                                         <button onClick={() => { update(i) }} className="form-control my-2 btn btn-primary rounded-pill">修改</button>
                                     </div>
                                     <div className="col-md-1">
-                                        <button onClick={() => { remove(i) }} className="form-control my-2 btn btn-danger rounded-pill">刪除</button>
+                                        <button onClick={() => { remove(i) }} className="form-control my-2 btn btn-danger rounded-pill" >刪除</button>
 
                                     </div>
                                 </div>

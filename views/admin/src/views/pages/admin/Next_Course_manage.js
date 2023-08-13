@@ -1,31 +1,40 @@
 import { useEffect, useState } from "react";
 import React from 'react';
-
-
 const ipconfig = require('../../../ipconfig')
 const path = ipconfig.webhost + ":" + ipconfig.port
-function generateThisWeekDates() {
-    const today = new Date();
-    const startDayOfWeek = new Date(today);
-    let dayOfWeek = today.getDay(); // 获取今天是星期几
+function displayWeekDates() {
+    // 取得今天的日期
+    var today = new Date();
+    today = today.setDate(today.getDate() + 7)
+    today = new Date(today);
+    // 取得今天是星期幾（0 表示星期日，1 表示星期一，以此類推）
+    var dayOfWeek = today.getDay();
     if (dayOfWeek === 0) {
         dayOfWeek = 7
     }
-    if (dayOfWeek !== 1) {
-        // 如果今天不是星期一，就将日期调整到本周星期一
-        startDayOfWeek.setDate(today.getDate() - dayOfWeek + 1);
+    // 計算一週的第一天（星期一）的日期
+    var firstDayOfWeek = new Date(today);
+    firstDayOfWeek.setDate(today.getDate() - dayOfWeek + 1);
+    let date_week = []
+    // 顯示一週的日期範圍
+    for (var i = 0; i < 7; i++) {
+        var currentDate = new Date(firstDayOfWeek);
+        currentDate.setDate(firstDayOfWeek.getDate() + i);
+        var day = currentDate.getDate();
+        if (parseInt(day) < 10) {
+            day = "0" + day
+        }
+        var month = currentDate.getMonth() + 1; // 月份是從 0 開始的，所以需要 +1
+        if (parseInt(month) < 10) {
+            month = "0" + month
+        }
+        var year = currentDate.getFullYear();
+        var weekDay = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'][currentDate.getDay()];
+        var date = year + '-' + month + '-' + day
+        var week = weekDay
+        date_week.push([date, week])
     }
-    const oneDayMilliseconds = 24 * 60 * 60 * 1000; // Number of milliseconds in one day
-    const weekDates = [];
-    const weekDates2 = [];
-    for (let i = 0; i < 7; i++) {
-        const currentDate = new Date(startDayOfWeek.getTime() + i * oneDayMilliseconds);
-        var date = (currentDate.toISOString().slice(0, 10).split('-'))
-        weekDates.push(date[1] + '/' + date[2]);
-        weekDates2.push(date[0] + '-' + date[1] + '-' + date[2]);
-    }
-
-    return [weekDates, weekDates2];
+    return date_week
 }
 export function Course_manage() {
 
@@ -36,15 +45,13 @@ export function Course_manage() {
         var searchtime = (document.getElementById('search_time_id').value)
         var searchfinish = document.getElementById('search_finish_id').value
         var searchname = document.getElementById('search_name_id').value
-        // console.log(searchtime, searchfinish, searchname)
         var href = path + '/api-courseData'
-        // console.log(weekRange[1])
         await fetch(href, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({
-                'start': weekRange[1][0],
-                'end': weekRange[1][6],
+                'start': weekRange[0][0],
+                'end': weekRange[6][0],
                 'searchtime': searchtime,
                 'searchfinish': searchfinish,
                 'searchname': searchname
@@ -52,15 +59,13 @@ export function Course_manage() {
         }).then(response => response.json())
             .then(data => {
                 setclass_data(data)
-            }).catch((err) => {
+            }).catch((err)=>{
                 alert(err)
             })
     }
     const [teacher, setteacher] = useState(null)
     const Teacher = async () => {
-
         var href = path + '/api-teacherData'
-
         await fetch(href, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -69,12 +74,10 @@ export function Course_manage() {
             })
         }).then(response => response.json())
             .then(data => {
-
                 setteacher(data)
-                // console.log(data)
-
+            }).catch((err)=>{
+                alert(err)
             })
-
     }
     const [studentData, setstudentData] = useState(null)
     const StudentData = async () => {
@@ -87,7 +90,6 @@ export function Course_manage() {
             })
         }).then(response => response.json())
             .then(data => {
-                // console.log(data)
                 setstudentData(data)
             })
     }
@@ -97,14 +99,13 @@ export function Course_manage() {
         StudentData()
         fetchdata()
     }, [])
-    var weekRange = generateThisWeekDates();
+    var weekRange = displayWeekDates();
     const [display, setdisplay] = useState('none')
     const [start, setstart] = useState(weekRange[0][0])
-    const [end, setend] = useState(weekRange[0][6])
-
-
+    const [end, setend] = useState(weekRange[6][0])
 
     function Course_item() {
+        // 使用示例
 
         const update = (i) => {
             var id = document.getElementById('id' + i).textContent
@@ -113,7 +114,6 @@ export function Course_manage() {
             var date = document.getElementById('date' + i).value
             var time = document.getElementById('time' + i).value
             var course_id = document.getElementById('course_id' + i).value
-            console.log("星期" + weekNumber(date) + " " + time)
             var href = path + '/api-courseUpdate'
 
             fetch(href, {
@@ -126,24 +126,18 @@ export function Course_manage() {
                     'time': "星期" + weekNumber(date) + " " + time,
                     'finish': finish,
                     'course_id': course_id
-
-
                 })
             }).then(response => response.json())
                 .then(data => {
                     if (data['狀態'] == "成功") {
                         alert('更新成功')
                         fetchdata()
-
                     } else {
                         alert('更新失敗')
                     }
-                    // console.log(data)
-
-                }).catch((err) => {
+                }).catch((err)=>{
                     alert(err)
                 })
-
         }
         const settime = (e) => {
             return e.split(" ")[1]
@@ -171,18 +165,16 @@ export function Course_manage() {
         const nullred = (e) => {
             if (e == null) {
                 return { borderColor: "red" }
-
             } else {
                 if (e === 2) {
                     return { borderColor: "blue" }
-
                 } else {
                     return { borderColor: "blcak" }
-
                 }
 
             }
         }
+
         const Change_course = (props) => {
             let course = props.item.slice(0, -2)
             const courseNumbers = [];
@@ -203,8 +195,26 @@ export function Course_manage() {
             )
 
         }
-
-
+        const course_remove = (e) => {
+            var href = path + '/api-nextcourse_remove'
+            fetch(href, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    'id': e,
+                })
+            }).then(response => response.json())
+                .then(data => {
+                    if (data['狀態'] == "成功") {
+                        alert(data['訊息'])
+                        fetchdata()
+                    } else {
+                        alert(data['訊息'])
+                    }
+                }).catch((err) => {
+                    alert(err)
+                })
+        }
 
         const Item = (props) => {
             let i = props.index
@@ -213,10 +223,8 @@ export function Course_manage() {
                     <div className='col-md-11 border my-2 rounded-pill  item-hover'  >
                         <div className='row p-2 py-3'>
                             <div className='col-md-1 d-flex align-items-center justify-content-center '>
-                                <p className='my-3 fs-5  text-center'>{props.item.slice(0, 3)} </p>
-                                {/* {"第" + class_data['class_id'][i].slice(-2) + "集"} */}
+                                <p className='my-3 fs-5  text-center'>{props.item.slice(0, 5)} </p>
                                 <p id={'id' + i} className="d-none">{class_data['id'][i]}</p>
-
                             </div>
                             <div className='col-md-2 d-flex justify-content-center fs-5 align-items-center '>
                                 {class_data['class_title'][i] != null ? (
@@ -228,6 +236,7 @@ export function Course_manage() {
 
 
                             </div>
+
                             <div className='col-md-1 d-flex justify-content-center py-2 px-0'>
                                 {/* <input id={'course_id' + i} className="form-control w-100 text-center" placeholder={class_data['class_id'][i]} /> */}
                                 <select id={'course_id' + i} className='form-select w-100'>
@@ -237,13 +246,12 @@ export function Course_manage() {
 
 
                             </div>
-                            <div className='col-md-2 d-flex justify-content-center py-2'>
+                            <div className='col-md-1 d-flex justify-content-center py-2'>
                                 {teacher['nickname'] != null &&
                                     <>
-                                        <select id={'teacher' + i} className='form-select' style={nullred(class_data['nickname'][i])}>
-                                            <option value={checknull(class_data['teacher_id'][i])} className="text-primary">{checknull(class_data['nickname'][i])}</option>
-                                            <option className="text-danger" value={null}>未完成</option>
-
+                                        <select id={'teacher' + i} className='form-select w-100' style={nullred(class_data['nickname'][i])}>
+                                            <option value={checknull(class_data['teacher_id'][i])} className="text-primary">{checknull(class_data['nickname'][i])}(預設)</option>
+                                            <option value={null} className="text-danger">未完成</option>
                                             {teacher['nickname'].map((item, i) => (
                                                 <option key={i} value={teacher['teacher_id'][i]}>{item}</option>
                                             ))}
@@ -256,11 +264,8 @@ export function Course_manage() {
                             </div>
                             <div className='col-md-2 d-flex justify-content-center py-2'>
                                 <select id={'date' + i} className='form-select'>
-
                                     <option value={class_data['class_date'][i]} className="text-primary">{class_data['class_date'][i].split('-')[1]}/{class_data['class_date'][i].split('-')[2]} ({weekNumber(class_data['class_date'][i])}) (預設)</option>
-
                                     <WeekDate />
-
                                 </select>
                             </div>
                             <div className='col-md-2 d-flex justify-content-center py-2'>
@@ -284,15 +289,20 @@ export function Course_manage() {
                                 </select>
                             </div>
                             <div className='col-md-1 d-flex justify-content-center py-2'>
-                                <button id={i} onClick={(e) => { update(e.target.id) }} className='btn btn-secondary rounded-pill'>修改</button>
+                                <button id={i} onClick={(e) => { update(e.target.id) }} className='btn  w-100 btn-primary rounded-pill'>修改</button>
+                            </div>
+                            <div className='col-md-1 d-flex justify-content-center py-2'>
+                                <button id={i} onClick={(e) => { course_remove(class_data['id'][i]) }} className='btn w-100 btn-danger rounded-pill'>刪除</button>
                             </div>
                         </div>
 
 
                     </div >
+
                 </>
             )
         }
+
         return (
             // 資料畫面
 
@@ -303,12 +313,9 @@ export function Course_manage() {
                             class_data['fullname'].map((item, i) => (
                                 <Item key={i} item={item} index={i} />
                             ))
-
                         }
                     </>
-
                 ) : (
-
                     <div className="col-md-11 vh-100">
                         <div className="row h-100 justify-content-center align-content-center">
                             <div className="spinner-border text-primary mx-3" role="status">
@@ -331,14 +338,38 @@ export function Course_manage() {
 
 
     const WeekDate = (e) => {
+        function generateThisWeekDates() {
+            const today = new Date();
+            today.setDate(today.getDate() + 7)
+            const startDayOfWeek = new Date(today);
 
+            let dayOfWeek = today.getDay(); // 获取今天是星期几
+            if (dayOfWeek === 0) {
+                dayOfWeek = 7
+            }
 
+            // 计算第一天（星期一）的日期
+            if (dayOfWeek !== 1) {
+                // 如果今天不是星期一，就将日期调整到本周星期一
+                startDayOfWeek.setDate(today.getDate() - dayOfWeek + 1);
+            }
+            const oneDayMilliseconds = 24 * 60 * 60 * 1000; // Number of milliseconds in one day
+            const weekDates = [];
+            const weekDates2 = [];
+            for (let i = 0; i < 7; i++) {
+                const currentDate = new Date(startDayOfWeek.getTime() + i * oneDayMilliseconds);
+                var date = (currentDate.toISOString().slice(0, 10).split('-'))
+                weekDates.push(date[1] + '/' + date[2]);
+                weekDates2.push(date[0] + '-' + date[1] + '-' + date[2]);
+            }
+            return [weekDates, weekDates2];
+        }
 
         const weekDate = generateThisWeekDates();
-
         var week = ['一', '二', '三', '四', '五', '六', '日']
         return (
             <>
+                {/* <option value='null'>--請選擇時間--</option> */}
                 {weekDate[0].map((item, i) => (
                     <option key={i} value={weekDate[1][i]}>{item} ({week[i]})</option>
                 )
@@ -411,7 +442,11 @@ export function Course_manage() {
             document.removeEventListener('keydown', keyDownHandler);
         };
     }, [])
+    const date_change = (e) => {
+        var date = e.split("-")
+        return date[1] + " / " + date[2]
 
+    }
     return (
         // 主畫面
         <>
@@ -422,7 +457,7 @@ export function Course_manage() {
                 <div className="col-md-11">
                     <div className="row">
                         <div className='col-md-12'>
-                            <h1 className='text-center p-1 fw-bold text-green'>{start} ~ {end} 課表管理</h1>
+                            <h1 className='text-center p-1 fw-bold text-green'>{date_change(start)} ~ {date_change(end)} 下週課表管理</h1>
                         </div>
                     </div>
                     <div className="row justify-content-between gx-1">
@@ -432,7 +467,6 @@ export function Course_manage() {
                         <div className='col-md-2 d-flex justify-content-center py-2'>
                             <select id='search_time_id' className='form-select'>
                                 <option value='null'>--請選擇時間--</option>
-
                                 <WeekDate />
                             </select>
                         </div>
@@ -494,8 +528,7 @@ export function Course_manage() {
                         <div className='col-md-2 d-flex justify-content-center py-2'>
                             <select id='add_teacher' className='form-select'>
                                 <option value={'null'}>--請選擇老師--</option>
-                                <option  value={null}>未完成</option>
-
+                                <option value={null}>未完成</option>
                                 {teacher != null && (
                                     <>
                                         {teacher['nickname'].map((item, i) => (
@@ -507,7 +540,7 @@ export function Course_manage() {
                         </div>
                         <div className='col-md-2 d-flex justify-content-center py-2'>
                             <select id='add_date' className='form-select'>
-                                <option value='null'>--請選擇時間--</option>
+                            <option value='null'>--請選擇時間--</option>
 
                                 <WeekDate />
                             </select>

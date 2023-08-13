@@ -4,7 +4,6 @@ const query = util.promisify(con.query).bind(con);
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-
 const course = {
     courseBuilder: (req, res) => {
         sql = `
@@ -25,9 +24,8 @@ const course = {
             var w = null
             var t = null
             
-
         }
-        console.log(change_date('52'))
+        // console.log(change_date('52'))
         con.query(sql, (err, rows) => {
             if (!err) {
                 // console.log(rows)
@@ -68,7 +66,7 @@ const course = {
         order by  class_date DESC , class_time DESC  LIMIT 1
         `
         // and course_record.finish = 1
-        console.log(sql)
+        // console.log(sql)
         con.query(sql, (err, rows) => {
             if (err) {
                 res.json({ "狀態": "失敗", "訊息": "資料庫撈取失敗! ，請確認網路環境是否良好" })
@@ -84,11 +82,15 @@ const course = {
                 if (course_number < 10) {
                     course_number = "0" + course_number
                 }
+                var teacher = null
+                if(req.body.teacher !== "未完成"){
+                    teacher =req.body.teacher 
+                }
 
                 if (parseInt(rows[0].duration) >= parseInt(course_number)) {
                     var sql = `
                     INSERT INTO course_record(class_date,class_time,std_id,class_id,teacher_id,type_id,finish,course_id)
-                    VALUES ('${req.body.date}','${req.body.time}','${req.body.id}','${course_name + course_number}','${req.body.teacher}','${req.body.course}','${req.body.finish}','${rows[0].course_id}')
+                    VALUES ('${req.body.date}','${req.body.time}','${req.body.id}','${course_name + course_number}',${teacher},'${req.body.course}','${req.body.finish}','${rows[0].course_id}')
 
                     `
                     // console.log(sql)
@@ -123,7 +125,11 @@ const course = {
             // console.log("修改")
             id = 0
         }
-        course_id = ''
+        var teacher = data['teacher']
+        if (data['teacher']=="未完成"){
+            teacher = null
+        }
+        var course_id = ''
         if (data.course_id != "") {
             course_id += `class_id = '${data['course_id']}',`
         }
@@ -135,7 +141,7 @@ const course = {
             course_id
             +
             `
-        teacher_id = '${data['teacher']}',finish = '${id}'
+        teacher_id = ${teacher},finish = '${id}'
         where id = '${data['id']}'
         `
         // console.log(sql)

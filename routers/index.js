@@ -28,5 +28,7 @@ router.post('/api-course_data', urlencodedParser,couseInit.course_data);
 router.post('/api-course_remove', urlencodedParser,couseInit.course_remove);
 const courseBuilder = require('../controllers/courseBuilder')
 router.post('/api-course_builder', urlencodedParser,courseBuilder.Course_builder)
+router.post('/api-nextcourse_remove', urlencodedParser,courseBuilder.Course_remove)
+
 
 module.exports = router;

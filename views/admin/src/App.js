@@ -29,7 +29,6 @@ function App() {
       body: new URLSearchParams({
         'user_id': user_id,
         'token': token
-
       })
     }).then(response => response.json())
       .then(data => {
@@ -38,9 +37,9 @@ function App() {
           'identify': localStorage.getItem('identify')
         }
         dispatch(setLogin(userData))
+      }).catch((err)=>{
+        alert(err)
       })
-
-
   }
 
   return (

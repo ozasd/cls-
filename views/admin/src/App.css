@@ -6,3 +6,19 @@
 .bg-secondary2{
   background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
 }
+
+.text-green{
+  color:#158481;
+}
+
+
+.bg-blue{
+  background-color:#394d91;
+  color:white;
+  border: none;
+}
+.bg-blue:hover{
+  background-color:#394d91;
+  color:white;
+  border: none;
+}

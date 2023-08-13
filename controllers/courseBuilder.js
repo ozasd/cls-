@@ -12,7 +12,9 @@ function displayWeekDates() {
     today = new Date(today);
     // 取得今天是星期幾（0 表示星期日，1 表示星期一，以此類推）
     var dayOfWeek = today.getDay();
-
+    if (dayOfWeek === 0 ){
+        dayOfWeek = 7
+    }
     // 計算一週的第一天（星期一）的日期
     var firstDayOfWeek = new Date(today);
     firstDayOfWeek.setDate(today.getDate() - dayOfWeek + 1);
@@ -66,6 +68,24 @@ function sortByDate(data) {
     return sortedData;
   }
 const Course_builder = {
+    Course_remove:(req,res) =>{
+        console.log('next_Course_remove')
+        var data = req.body.id
+        var sql = `
+        delete from course_record
+        where id = ${data}
+        `
+        // console.log(sql)
+        con.query(sql,(err,rows)=>{
+            if(!err){
+                res.json({"狀態":"成功","訊息":"刪除成功 !"})
+
+            }else{
+                res.json({"狀態":"失敗","訊息":"刪除失敗 !"})
+
+            }
+        })
+    },
     Course_builder: (req, res) => {
         const df = new pd.DataFrame({
             studentid: req.body.studentid.split(','),
@@ -88,9 +108,7 @@ const Course_builder = {
             if (err) {
                 console.log(err)
             } else {
-                // console.log(rows)
                 Array.from(rows).forEach((item, i) => {
-
                     var datetime = null
                     if (item.type_id == 1) {
                         console.log("程式課")
@@ -109,24 +127,20 @@ const Course_builder = {
                         "class_date": [class_date],
                         "class_time": [class_time],
                         "std_id": [String(std_id)],
-                        "teacher_id": [""],
+                        "teacher_id": [null],
                         "class_id": [class_id],
                         "type_id": [String(type_id)],
                         "course_id": [course_id]
 
                     }
                     Array.from(df['_data']["studentid"]).forEach((item, i) => {
-                        // console.log(std_id, df['_data']["studentid"][i])
-                        // console.log(item == std_id, type_id == (df['_data']["type_id"][i]))
                         if (item == std_id && type_id == (df['_data']["type_id"][i])) {
-                            // console.log(df)
                             var n = parseInt(class_id.slice(-2)) + 1 + i
                             if (n < 10) {
                                 n = "0" + String(n)
                             } else {
                                 n = String(n)
                             }
-
                             data['class_date'].push(df['_data']["date"][i])
                             data['class_time'].push(df['_data']["time"][i])
                             data['std_id'].push(df['_data']["studentid"][i])
@@ -134,43 +148,30 @@ const Course_builder = {
                             data['class_id'].push(class_id.slice(0, -2) + n)
                             data['type_id'].push(df['_data']["type_id"][i])
                             data['course_id'].push(course_id)
-
-                            console.log("--------------------------------------------------新增補課")
-
                         }
 
                     })
                     // console.log(data)
                     var Sortdata = sortByDate(data)
                     Sortdata['class_id'].sort()
-                    // console.log(Sortdata)
                     Array.from(Sortdata['class_id']).forEach((item,i)=>{
                         var sql = `
                         insert into course_record (class_date,class_time,std_id,class_id,teacher_id,type_id,finish,course_id,comment)
-                        values('${Sortdata['class_date'][i]}','${Sortdata['class_time'][i]}','${Sortdata['std_id'][i]}','${Sortdata['class_id'][i]}','${Sortdata['teacher_id'][i]}','${Sortdata['type_id'][i]}','0','${Sortdata['course_id'][i]}',"#自動生成課表")
-
+                        values('${Sortdata['class_date'][i]}','${Sortdata['class_time'][i]}','${Sortdata['std_id'][i]}','${Sortdata['class_id'][i]}',${Sortdata['teacher_id'][i]},'${Sortdata['type_id'][i]}','0','${Sortdata['course_id'][i]}',"#自動生成課表")
                         ` 
-                        console.log(sql)
+                        // console.log(sql)
+                        con.query(sql,(err,rows)=>{
+                            if(!err){
+                                console.log("新增成功 !") 
+                            }else{
+                                console.log("新增失敗 !")
+                            }
+                        })
                     })
-
-
-
-
-
-
                 })
-
             }
-
         })
-
-
-
-
-    
-
-
-        res.json({})
+        res.json({"訊息":"排課完成 !"})
     }
 
 
