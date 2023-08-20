@@ -5,52 +5,52 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const course = {
-    courseBuilder: (req, res) => {
-        sql = `
-        SELECT distinct std_id,fullname,first_class,second_class
-        FROM hct_cls.course_record
-        left join cls_user_data on hct_cls.cls_user_data.user_id = hct_cls.course_record.std_id
-        left join cls_user on hct_cls.cls_user.user_id = hct_cls.course_record.std_id
-        WHERE class_date BETWEEN '2023-07-17' AND '2023-07-30'
-        AND std_id != 32
-        AND std_id != 33
-        order by std_id
-        `
+    // courseBuilder: (req, res) => {
+    //     sql = `
+    //     SELECT distinct std_id,fullname,first_class,second_class
+    //     FROM hct_cls.course_record
+    //     left join cls_user_data on hct_cls.cls_user_data.user_id = hct_cls.course_record.std_id
+    //     left join cls_user on hct_cls.cls_user.user_id = hct_cls.course_record.std_id
+    //     WHERE class_date BETWEEN '2023-07-17' AND '2023-07-30'
+    //     AND std_id != 32
+    //     AND std_id != 33
+    //     order by std_id
+    //     `
         
-        var time = ['10:30~12:00','13:00~14:30','14:30~16:00','16:00~17:30','17:30~19:00','19:00~20:30']
-        var week = ['星期一','星期二','星期三','星期四','星期五','星期六','星期日']
+    //     var time = ['10:30~12:00','13:00~14:30','14:30~16:00','16:00~17:30','17:30~19:00','19:00~20:30']
+    //     var week = ['星期一','星期二','星期三','星期四','星期五','星期六','星期日']
 
-        function change_date(e){
-            var w = null
-            var t = null
+    //     function change_date(e){
+    //         var w = null
+    //         var t = null
             
-        }
-        // console.log(change_date('52'))
-        con.query(sql, (err, rows) => {
-            if (!err) {
-                // console.log(rows)
-                let student_data = {
+    //     }
+    //     // console.log(change_date('52'))
+    //     con.query(sql, (err, rows) => {
+    //         if (!err) {
+    //             // console.log(rows)
+    //             let student_data = {
 
-                    std_id: [],
-                    fullname: [],
-                    first_class:[],
-                    second_class:[]
+    //                 std_id: [],
+    //                 fullname: [],
+    //                 first_class:[],
+    //                 second_class:[]
 
-                }
+    //             }
 
-                Array.from(rows).forEach((item, i) => {
-                    student_data.std_id.push(item.std_id)
-                    student_data.fullname.push(item.fullname)
-                    student_data.first_class.push(item.first_class)
-                    student_data.second_class.push(item.second_class)
-                })
-                // console.log(teacher_data)
-                res.json(student_data)
-            }
+    //             Array.from(rows).forEach((item, i) => {
+    //                 student_data.std_id.push(item.std_id)
+    //                 student_data.fullname.push(item.fullname)
+    //                 student_data.first_class.push(item.first_class)
+    //                 student_data.second_class.push(item.second_class)
+    //             })
+    //             // console.log(teacher_data)
+    //             res.json(student_data)
+    //         }
 
-        })
+    //     })
 
-    },
+    // },
     courseAdd: (req, res) => {
         console.log('courseAdd')
         // console.log(req.body)
@@ -74,9 +74,11 @@ const course = {
                 // console.log(rows)
                 var class_id = rows[0].class_id
                 var course_number = class_id.slice(-2)
-                var course_name = class_id.split(course_number)[0]
-                // console.log(course_number, course_name)
-                // console.log(rows[0].duration, course_number)
+                var course_name = class_id.slice(0,-2)
+                // console.log(class_id)
+                // console.log("course_number",course_number)
+                // console.log("course_name",course_name)
+
                 course_number = parseInt(course_number) + 1
 
                 if (course_number < 10) {
@@ -93,16 +95,16 @@ const course = {
                     VALUES ('${req.body.date}','${req.body.time}','${req.body.id}','${course_name + course_number}',${teacher},'${req.body.course}','${req.body.finish}','${rows[0].course_id}')
 
                     `
-                    // console.log(sql)
-                    con.query(sql, (err, rows) => {
-                        if (err) {
-                            res.json({ "狀態": "失敗", "訊息": "課程新增失敗，請再重試一次 !" })
+                    console.log(sql)
+                    // con.query(sql, (err, rows) => {
+                    //     if (err) {
+                    //         res.json({ "狀態": "失敗", "訊息": "課程新增失敗，請再重試一次 !" })
 
-                        } else {
-                            res.json({ "狀態": "成功", "訊息": "課程新增成功 !" })
-                        }
+                    //     } else {
+                    //         res.json({ "狀態": "成功", "訊息": "課程新增成功 !" })
+                    //     }
 
-                    })
+                    // })
 
                 } else {
                     res.json({ "狀態": "失敗", "訊息": "此課程已經上完，無須補課!" })
@@ -251,17 +253,18 @@ const course = {
         }
 
         sql = `
-        SELECT id,course_record.class_date,course_record.class_time,course_record.std_id, student.fullname ,course_record.class_id,course_detail.class_title,teacher_id,teacher.nickname,type_id,IF(finish='0',null,finish) as finish
+        SELECT id,course_record.class_date,course_record.class_time,course_record.std_id, student.fullname ,course_record.class_id, course_name,course_detail.class_title,teacher_id,teacher.nickname,course_record.type_id,IF(finish='0',null,finish) as finish
         FROM hct_cls.course_record 
         left join cls_user as teacher on course_record.teacher_id = teacher.user_id
         left join cls_user as student on course_record.std_id = student.user_id
         left join course_detail on course_record.class_id =course_detail.class_id
+        left join course_list on course_list.course_id = course_record.course_id
         `+
 
             sql_time
             +
             `
-        order by class_date
+        order by class_date,class_time,student.fullname
 
         `
         // console.log(sql)
@@ -288,7 +291,7 @@ const course = {
                     course_record.std_id.push(item.std_id)
                     course_record.fullname.push(item.fullname)
                     course_record.class_id.push(item.class_id)
-                    course_record.class_title.push(item.class_title)
+                    course_record.class_title.push(item.course_name) //先改成course_name
                     course_record.teacher_id.push(item.teacher_id)
                     course_record.nickname.push(item.nickname)
                     course_record.type_id.push(item.type_id)
