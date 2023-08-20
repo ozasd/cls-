@@ -58,9 +58,7 @@ export function Course_manage() {
     }
     const [teacher, setteacher] = useState(null)
     const Teacher = async () => {
-
         var href = path + '/api-teacherData'
-
         await fetch(href, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -69,11 +67,8 @@ export function Course_manage() {
             })
         }).then(response => response.json())
             .then(data => {
-
                 setteacher(data)
-                // console.log(data)
-
-            }).catch((err)=>{
+            }).catch((err) => {
                 alert(err)
             })
 
@@ -91,22 +86,39 @@ export function Course_manage() {
             .then(data => {
                 // console.log(data)
                 setstudentData(data)
-            }).catch((err)=>{
+            }).catch((err) => {
                 alert(err)
             })
     }
+    const [course_data, setcourse_data] = useState(null)
+    const Course_data = async () => {
 
+        var href = path + '/api-course_data'
+
+        await fetch(href, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+
+            })
+        }).then(response => response.json())
+            .then(data => {
+                setcourse_data(data)
+
+            }).catch((err) => {
+                alert(err)
+            })
+    }
     useEffect(() => {
         Teacher()
         StudentData()
         fetchdata()
+        Course_data()
     }, [])
     var weekRange = generateThisWeekDates();
     const [display, setdisplay] = useState('none')
     const [start, setstart] = useState(weekRange[0][0])
     const [end, setend] = useState(weekRange[0][6])
-
-
 
     function Course_item() {
 
@@ -220,7 +232,6 @@ export function Course_manage() {
                                 <p className='my-3 fs-5  text-center'>{props.item.slice(0, 3)} </p>
                                 {/* {"第" + class_data['class_id'][i].slice(-2) + "集"} */}
                                 <p id={'id' + i} className="d-none">{class_data['id'][i]}</p>
-
                             </div>
                             <div className='col-md-2 d-flex justify-content-center fs-5 align-items-center '>
                                 {class_data['class_title'][i] != null ? (
@@ -229,8 +240,6 @@ export function Course_manage() {
                                     <span className="text-danger fs-6">抓取課程失敗 !<br />(新增課程時出現錯誤)</span>
                                 )}
                                 <br />
-
-
                             </div>
                             <div className='col-md-1 d-flex justify-content-center py-2 px-0'>
                                 {/* <input id={'course_id' + i} className="form-control w-100 text-center" placeholder={class_data['class_id'][i]} /> */}
@@ -238,8 +247,6 @@ export function Course_manage() {
                                     <option value={class_data['class_id'][i]}>第{class_data['class_id'][i].slice(-2)}集 (預設)</option>
                                     <Change_course item={class_data['class_id'][i]} />
                                 </select>
-
-
                             </div>
                             <div className='col-md-2 d-flex justify-content-center py-2'>
                                 {teacher['nickname'] != null &&
@@ -247,24 +254,17 @@ export function Course_manage() {
                                         <select id={'teacher' + i} className='form-select' style={nullred(class_data['nickname'][i])}>
                                             <option value={checknull(class_data['teacher_id'][i])} className="text-primary">{checknull(class_data['nickname'][i])}</option>
                                             <option className="text-danger" value={null}>未完成</option>
-
                                             {teacher['nickname'].map((item, i) => (
                                                 <option key={i} value={teacher['teacher_id'][i]}>{item}</option>
                                             ))}
                                         </select>
-
                                     </>
-
                                 }
-
                             </div>
                             <div className='col-md-2 d-flex justify-content-center py-2'>
                                 <select id={'date' + i} className='form-select'>
-
                                     <option value={class_data['class_date'][i]} className="text-primary">{class_data['class_date'][i].split('-')[1]}/{class_data['class_date'][i].split('-')[2]} ({weekNumber(class_data['class_date'][i])}) (預設)</option>
-
                                     <WeekDate />
-
                                 </select>
                             </div>
                             <div className='col-md-2 d-flex justify-content-center py-2'>
@@ -392,7 +392,7 @@ export function Course_manage() {
                     }
                     // console.log(data)
 
-                }).catch((err)=>{
+                }).catch((err) => {
                     alert(err)
                 })
 
@@ -418,6 +418,82 @@ export function Course_manage() {
         };
     }, [])
 
+
+    const Course_number = () => {
+        let nlist = []
+        for (let i = 1; i <= 50; i++) {
+            if (i < 10) {
+                i = "0" + String(i)
+            }
+            nlist.push(i)
+
+        }
+        return (
+            <>
+                <option value={0}>集數</option>
+
+                {nlist.map((item, i) => (
+                    <option value={item}>{item}</option>
+                ))}
+            </>
+        )
+    }
+
+
+    const add_record = () => {
+        var std_id = document.getElementById('add_stdid').value
+        var classid = document.getElementById('add_classid').value
+        var teacherid = document.getElementById('add_teacherid').value
+        var date = document.getElementById('add_date2').value
+        var time = document.getElementById('add_time2').value
+        var finish = document.getElementById('add_finish').value
+        // console.log(std_id)
+        // console.log(classid.split(',')[0])
+        // console.log(classid.split(',')[1])
+        // console.log(teacherid)
+        // console.log(date)
+        // console.log(time)
+        // console.log(finish)
+        if (std_id != 'null' && date != 'null' && time != 'null') {
+            var href = path + '/api-add_record'
+            fetch(href, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    'id': std_id,
+                    'teacher': teacherid,
+                    'class_id': classid.split(',')[1],
+                    'course_id': classid.split(',')[0],
+                    'date': date,
+                    'time': "星期" + weekNumber(date) + " " + time,
+                    'finish': finish
+                })
+            }).then(response => response.json())
+                .then(data => {
+                    if (data['狀態'] === "成功") {
+                        fetchdata()
+                        alert(data['訊息'])
+
+                    } else {
+
+                        fetchdata()
+                        alert(data['訊息'])
+
+                    }
+                    // console.log(data)
+
+                }).catch((err) => {
+                    alert(err)
+                })
+
+        } else {
+            alert('請輸入完整 !')
+        }
+
+
+
+
+    }
     return (
         // 主畫面
         <>
@@ -468,16 +544,15 @@ export function Course_manage() {
                 </div>
             </div>
             {/* ------------------------------------------------------------------------------------------------------------------------------------ */}
-            {/* 新增課程item */}
+            {/* 補課新增 */}
             <div className='row  mt-2 justify-content-center align-content-start'>
-                <div className='col-md-11 border my-2 mt-4 mb-4 rounded-pill shadow' style={{ display: display }}>
+                <div className='col-md-11 border mt-4 mb-4 rounded-pill shadow' style={{ display: 'none' }}>
                     <div className='row p-2 py-3'>
                         <div className='col-md-2 d-flex justify-content-center py-2'>
                             <select id='add_name' className='form-select'>
                                 {studentData != null && (
                                     <>
                                         <option value={'null'}>--請選擇學生--</option>
-
                                         {studentData['fullname'].map((item, i) => (
                                             <option key={i} value={studentData['student_id'][i]}>{item}</option>
                                         ))}
@@ -494,13 +569,12 @@ export function Course_manage() {
                                 {/* <option value={3}>補多媒體設計 (繪圖、動畫影片編輯等)</option> */}
                                 {/* <option value={4}>補Minecraft (Minecraft玩家to開發者之路)</option> */}
                                 {/* <option value={5}>其它 (自由課輔/教師隋堂實時教授等)</option> */}
-
                             </select>
                         </div>
                         <div className='col-md-2 d-flex justify-content-center py-2'>
                             <select id='add_teacher' className='form-select'>
                                 <option value={'null'}>--請選擇老師--</option>
-                                <option  value={null}>未完成</option>
+                                <option value={null}>未完成</option>
 
                                 {teacher != null && (
                                     <>
@@ -538,6 +612,83 @@ export function Course_manage() {
                             <button onClick={() => { Add_course() }} className='btn btn-primary rounded-pill'>新增</button>
                         </div>
                     </div>
+
+                </div>
+                <div className='col-md-11 border my-4 rounded-pill shadow' style={{ display: display }}>
+                    <div className='row p-2 py-3'>
+                        <div className='col-md-2 d-flex justify-content-center py-2'>
+                            <select id='add_stdid' className='form-select'>
+                                {studentData != null && (
+                                    <>
+                                        <option value={'null'}>--請選擇學生--</option>
+                                        {studentData['fullname'].map((item, i) => (
+                                            <option key={i} value={studentData['student_id'][i]}>{item}</option>
+                                        ))}
+                                    </>
+                                )}
+
+                            </select>
+                        </div>
+                        <div className='col-md-2 d-flex justify-content-center py-2'>
+                            <select id='add_classid' className='form-select'>
+                                {/* {Course_data} */}
+                                {course_data != null && (
+                                    <>
+                                        {course_data.course_name.map((item, i) => (
+                                            <option key={i} value={course_data.course_id[i] + "," + course_data.class_id[i]}>{item} - {course_data.class_id[i]}</option>
+                                        ))}
+                                    </>
+                                )}
+
+                            </select>
+                        </div>
+                        {/* <div className='col-md-1    d-flex justify-content-center py-2'>
+                            <select id='add_coursenumber' className='form-select'>
+                                <Course_number />
+                            </select>
+                        </div> */}
+                        <div className='col-md-2 d-flex  justify-content-center py-2'>
+                            <select id='add_teacherid' className='form-select '>
+                                {/* <option value={'null'}>--請選擇老師--</option> */}
+                                <option value={null}>未完成</option>
+
+                                {teacher != null && (
+                                    <>
+                                        {teacher['nickname'].map((item, i) => (
+                                            <option key={i} value={teacher['teacher_id'][i]}>{item}</option>
+                                        ))}
+                                    </>
+                                )}
+                            </select>
+                        </div>
+                        <div className='col-md-2 d-flex justify-content-center py-2'>
+                            <select id='add_date2' className='form-select'>
+                                <option value='null'>--請選擇時間--</option>
+
+                                <WeekDate />
+                            </select>
+                        </div>
+                        <div className='col-md-2 d-flex justify-content-center py-2'>
+                            <select id='add_time2' className='form-select'>
+                                <option value={'null'}>--請選擇時間--</option>
+                                <option>10:30~12:00</option>
+                                <option>13:00~14:30	</option>
+                                <option>14:30~16:00</option>
+                                <option>16:00~17:30</option>
+                                <option>17:30~19:00</option>
+                                <option>19:00~20:30</option>
+                            </select>
+                        </div>
+                        <div className='col-md-1 d-flex justify-content-center py-2'>
+                            <select id='add_finish' className='form-select'>
+                                <option value={0}>未完成</option>
+                            </select>
+                        </div>
+                        <div className='col-md-1 d-flex justify-content-center py-2'>
+                            <button onClick={() => { add_record() }} className='btn btn-primary rounded-pill'>新增</button>
+                        </div>
+                    </div>
+
                 </div>
                 <Course_item />
 

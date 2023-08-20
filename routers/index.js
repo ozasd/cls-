@@ -20,6 +20,8 @@ router.post('/api-studentData', urlencodedParser,couseManage.studentData);
 router.post('/api-courseData', urlencodedParser,couseManage.courseData);
 router.post('/api-courseUpdate', urlencodedParser,couseManage.courseUpdate);
 router.post('/api-courseAdd', urlencodedParser,couseManage.courseAdd);
+router.post('/api-add_record', urlencodedParser,couseManage.add_record);
+
 const couseInit = require('../controllers/courseInit')
 router.post('/api-course_history', urlencodedParser,couseInit.course_history);
 router.post('/api-course_insert', urlencodedParser,couseInit.course_insert);
@@ -29,6 +31,5 @@ router.post('/api-course_remove', urlencodedParser,couseInit.course_remove);
 const courseBuilder = require('../controllers/courseBuilder')
 router.post('/api-course_builder', urlencodedParser,courseBuilder.Course_builder)
 router.post('/api-nextcourse_remove', urlencodedParser,courseBuilder.Course_remove)
-
 
 module.exports = router;

@@ -5,52 +5,69 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const course = {
-    // courseBuilder: (req, res) => {
-    //     sql = `
-    //     SELECT distinct std_id,fullname,first_class,second_class
-    //     FROM hct_cls.course_record
-    //     left join cls_user_data on hct_cls.cls_user_data.user_id = hct_cls.course_record.std_id
-    //     left join cls_user on hct_cls.cls_user.user_id = hct_cls.course_record.std_id
-    //     WHERE class_date BETWEEN '2023-07-17' AND '2023-07-30'
-    //     AND std_id != 32
-    //     AND std_id != 33
-    //     order by std_id
-    //     `
-        
-    //     var time = ['10:30~12:00','13:00~14:30','14:30~16:00','16:00~17:30','17:30~19:00','19:00~20:30']
-    //     var week = ['星期一','星期二','星期三','星期四','星期五','星期六','星期日']
+    add_record:(req,res)=>{
+        var data = req.body
+        var sql = `
+        SELECT * 
+        FROM hct_cls.course_record
+        where std_id = ${data.id}
+        and class_id like "${data.class_id.slice(0,-2)}%"
+        and (finish = 0 or finish = 1)
+        order by class_date desc ,class_time desc ,class_id desc limit 1
+        `
+        con.query(sql,(err,rows)=>{
+            if(err){
+                res.json({ "狀態": "失敗", "訊息": "資料庫撈取失敗! ，請確認網路環境是否良好" })
+            }else{
+                var class_id = data.class_id
+                if(rows.length != 0){
+                    // 找到上課資料
+                    var course_name = rows[0].class_id.slice(0,-2)
 
-    //     function change_date(e){
-    //         var w = null
-    //         var t = null
-            
-    //     }
-    //     // console.log(change_date('52'))
-    //     con.query(sql, (err, rows) => {
-    //         if (!err) {
-    //             // console.log(rows)
-    //             let student_data = {
+                    var course_number = parseInt(rows[0].class_id.slice(-2))+1
+                    if(course_number < 10){
+                        course_number = "0"+String(course_number)
+                    }else{
+                        course_number = String(course_number)
+                    }
+                    class_id = course_name + course_number
+                }
+                var teacher = data.teacher
+                if (teacher == '未完成'){
+                    teacher = null
+                } 
 
-    //                 std_id: [],
-    //                 fullname: [],
-    //                 first_class:[],
-    //                 second_class:[]
+                var sql_type = `
+                SELECT * 
+                FROM hct_cls.course_list
+                where course_id = ${data.course_id}
+                `
+                con.query(sql_type,(err,rows)=>{
+                    if(err){
+                        res.json({ "狀態": "失敗", "訊息": "課程新增失敗，請再重試一次 !" })
+                    }
+                    var type_id = rows[0].type_id
+                    var sql2 = `
+                    INSERT INTO course_record(class_date,class_time,std_id,class_id,teacher_id,type_id,finish,course_id)
+                    VALUES ('${data.date}','${data.time}','${data.id}','${class_id}',${teacher},'${type_id}','${data.finish}','${data.course_id}')
+                    `
+                    con.query(sql2,(err,rows)=>{
+                        if (err) {
+                            res.json({ "狀態": "失敗", "訊息": "課程新增失敗，請再重試一次 !" })
 
-    //             }
+                        } else {
+                            res.json({ "狀態": "成功", "訊息": "課程新增成功 !" })
+                        }
 
-    //             Array.from(rows).forEach((item, i) => {
-    //                 student_data.std_id.push(item.std_id)
-    //                 student_data.fullname.push(item.fullname)
-    //                 student_data.first_class.push(item.first_class)
-    //                 student_data.second_class.push(item.second_class)
-    //             })
-    //             // console.log(teacher_data)
-    //             res.json(student_data)
-    //         }
+                    })
+                })
+                
+                
+            }
+        })
 
-    //     })
 
-    // },
+    },
     courseAdd: (req, res) => {
         console.log('courseAdd')
         // console.log(req.body)
@@ -187,8 +204,6 @@ const course = {
                     // console.log(item)
                     teacher_data.teacher_id.push(item.user_id)
                     teacher_data.nickname.push(item.nickname)
-
-
                 })
                 // console.log(teacher_data)
                 res.json(teacher_data)

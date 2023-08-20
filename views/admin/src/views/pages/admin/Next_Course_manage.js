@@ -95,11 +95,30 @@ export function Course_manage() {
                 alert(err)
             })
     }
+    const [course_data, setcourse_data] = useState(null)
+    const Course_data = async () => {
 
+        var href = path + '/api-course_data'
+
+        await fetch(href, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+
+            })
+        }).then(response => response.json())
+            .then(data => {
+                setcourse_data(data)
+
+            }).catch((err) => {
+                alert(err)
+            })
+    }
     useEffect(() => {
         Teacher()
         StudentData()
         fetchdata()
+        Course_data()
     }, [])
     var weekRange = displayWeekDates();
     const [display, setdisplay] = useState('none')
@@ -451,6 +470,73 @@ export function Course_manage() {
         return date[1] + " / " + date[2]
 
     }
+
+    const add_record = () => {
+        var std_id = document.getElementById('add_stdid').value
+        var classid = document.getElementById('add_classid').value
+        var teacherid = document.getElementById('add_teacherid').value
+        var date = document.getElementById('add_date2').value
+        var time = document.getElementById('add_time2').value
+        var finish = document.getElementById('add_finish').value
+        
+        if (std_id != 'null' && date != 'null' && time != 'null') {
+            var href = path + '/api-add_record'
+            fetch(href, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    'id': std_id,
+                    'teacher': teacherid,
+                    'class_id': classid.split(',')[1],
+                    'course_id': classid.split(',')[0],
+                    'date': date,
+                    'time': "星期" + weekNumber(date) + " " + time,
+                    'finish': finish
+                })
+            }).then(response => response.json())
+                .then(data => {
+                    if (data['狀態'] === "成功") {
+                        fetchdata()
+                        alert(data['訊息'])
+
+                    } else {
+
+                        fetchdata()
+                        alert(data['訊息'])
+
+                    }
+                    // console.log(data)
+
+                }).catch((err) => {
+                    alert(err)
+                })
+
+        } else {
+            alert('請輸入完整 !')
+        }
+    }
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     return (
         // 主畫面
         <>
@@ -502,7 +588,7 @@ export function Course_manage() {
             {/* ------------------------------------------------------------------------------------------------------------------------------------ */}
             {/* 新增課程item */}
             <div className='row  mt-2 justify-content-center align-content-start'>
-                <div className='col-md-11 border my-2 mt-4 mb-4 rounded-pill shadow' style={{ display: display }}>
+                <div className='col-md-11 border my-2 mt-4 mb-4 rounded-pill shadow' style={{ display: 'none' }}>
                     <div className='row p-2 py-3'>
                         <div className='col-md-2 d-flex justify-content-center py-2'>
                             <select id='add_name' className='form-select'>
@@ -569,6 +655,82 @@ export function Course_manage() {
                             <button onClick={() => { Add_course() }} className='btn btn-primary rounded-pill'>新增</button>
                         </div>
                     </div>
+                </div>
+                <div className='col-md-11 border my-4 rounded-pill shadow' style={{ display: display }}>
+                    <div className='row p-2 py-3'>
+                        <div className='col-md-2 d-flex justify-content-center py-2'>
+                            <select id='add_stdid' className='form-select'>
+                                {studentData != null && (
+                                    <>
+                                        <option value={'null'}>--請選擇學生--</option>
+                                        {studentData['fullname'].map((item, i) => (
+                                            <option key={i} value={studentData['student_id'][i]}>{item}</option>
+                                        ))}
+                                    </>
+                                )}
+
+                            </select>
+                        </div>
+                        <div className='col-md-2 d-flex justify-content-center py-2'>
+                            <select id='add_classid' className='form-select'>
+                                {/* {Course_data} */}
+                                {course_data != null && (
+                                    <>
+                                        {course_data.course_name.map((item, i) => (
+                                            <option key={i} value={course_data.course_id[i] + "," + course_data.class_id[i]}>{item} - {course_data.class_id[i]}</option>
+                                        ))}
+                                    </>
+                                )}
+
+                            </select>
+                        </div>
+                        {/* <div className='col-md-1    d-flex justify-content-center py-2'>
+                            <select id='add_coursenumber' className='form-select'>
+                                <Course_number />
+                            </select>
+                        </div> */}
+                        <div className='col-md-2 d-flex  justify-content-center py-2'>
+                            <select id='add_teacherid' className='form-select '>
+                                {/* <option value={'null'}>--請選擇老師--</option> */}
+                                <option value={null}>未完成</option>
+
+                                {teacher != null && (
+                                    <>
+                                        {teacher['nickname'].map((item, i) => (
+                                            <option key={i} value={teacher['teacher_id'][i]}>{item}</option>
+                                        ))}
+                                    </>
+                                )}
+                            </select>
+                        </div>
+                        <div className='col-md-2 d-flex justify-content-center py-2'>
+                            <select id='add_date2' className='form-select'>
+                                <option value='null'>--請選擇時間--</option>
+
+                                <WeekDate />
+                            </select>
+                        </div>
+                        <div className='col-md-2 d-flex justify-content-center py-2'>
+                            <select id='add_time2' className='form-select'>
+                                <option value={'null'}>--請選擇時間--</option>
+                                <option>10:30~12:00</option>
+                                <option>13:00~14:30	</option>
+                                <option>14:30~16:00</option>
+                                <option>16:00~17:30</option>
+                                <option>17:30~19:00</option>
+                                <option>19:00~20:30</option>
+                            </select>
+                        </div>
+                        <div className='col-md-1 d-flex justify-content-center py-2'>
+                            <select id='add_finish' className='form-select'>
+                                <option value={0}>未完成</option>
+                            </select>
+                        </div>
+                        <div className='col-md-1 d-flex justify-content-center py-2'>
+                            <button onClick={() => { add_record() }} className='btn btn-primary rounded-pill'>新增</button>
+                        </div>
+                    </div>
+
                 </div>
                 <Course_item />
 
