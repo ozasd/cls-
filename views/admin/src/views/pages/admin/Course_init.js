@@ -29,6 +29,8 @@ export function Course_init() {
             .then(data => {
                 setCourse_history(data)
 
+            }).catch((err)=>{
+                alert(err)
             })
 
     }
@@ -46,6 +48,8 @@ export function Course_init() {
         }).then(response => response.json())
             .then(data => {
                 setstudentData(data)
+            }).catch((err)=>{
+                alert(err)
             })
     }
     const [course_data, setcourse_data] = useState(null)
@@ -63,6 +67,8 @@ export function Course_init() {
             .then(data => {
                 setcourse_data(data)
 
+            }).catch((err)=>{
+                alert(err)
             })
     }
     const [Course_history, setCourse_history] = useState([1, 2])
@@ -97,6 +103,8 @@ export function Course_init() {
                 Builder()
 
 
+            }).catch((err)=>{
+                alert(err)
             })
 
     }
@@ -148,6 +156,8 @@ export function Course_init() {
             .then(data => {
                 alert(data["訊息"])
                 Builder()
+            }).catch((err)=>{
+                alert(err)
             })
     }
 
@@ -169,6 +179,8 @@ export function Course_init() {
             .then(data => {
                 alert(data["訊息"])
                 Builder()
+            }).catch((err)=>{
+                alert(err)
             })
 
     }

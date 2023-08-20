@@ -73,6 +73,8 @@ export function Course_manage() {
                 setteacher(data)
                 // console.log(data)
 
+            }).catch((err)=>{
+                alert(err)
             })
 
     }
@@ -89,6 +91,8 @@ export function Course_manage() {
             .then(data => {
                 // console.log(data)
                 setstudentData(data)
+            }).catch((err)=>{
+                alert(err)
             })
     }
 
@@ -388,6 +392,8 @@ export function Course_manage() {
                     }
                     // console.log(data)
 
+                }).catch((err)=>{
+                    alert(err)
                 })
 
 

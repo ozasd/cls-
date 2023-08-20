@@ -91,6 +91,8 @@ export function Course_manage() {
         }).then(response => response.json())
             .then(data => {
                 setstudentData(data)
+            }).catch((err)=>{
+                alert(err)
             })
     }
 
@@ -419,6 +421,8 @@ export function Course_manage() {
                     }
                     // console.log(data)
 
+                }).catch((err)=>{
+                    alert(err)
                 })
 
 

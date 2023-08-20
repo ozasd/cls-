@@ -169,6 +169,7 @@ const course = {
         SELECT user_id , nickname
         FROM hct_cls.cls_user
         where identity = 2
+        order by last_login DESC
         `
 
         // console.log(sql)
@@ -202,6 +203,7 @@ const course = {
         SELECT user_id,fullname
         FROM hct_cls.cls_user
         where identity = 1  
+        order by last_login DESC
         `
         con.query(sql, (err, rows) => {
             // console.log(rows)。

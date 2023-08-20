@@ -120,6 +120,8 @@ export function Course_builder() {
                 if (data['class_date'].length != 0) {
                     setnext_course(data)
                 }
+            }).catch((err)=>{
+                alert(err)
             })
     }
 
@@ -142,6 +144,8 @@ export function Course_builder() {
                 alert(data['訊息'])
                 fetchdata()
 
+            }).catch((err)=>{
+                alert(err)
             })
     }
 
@@ -160,6 +164,8 @@ export function Course_builder() {
         }).then(response => response.json())
             .then(data => {
                 setteacher(data)
+            }).catch((err)=>{
+                alert(err)
             })
 
     }
