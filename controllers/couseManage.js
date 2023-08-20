@@ -95,16 +95,16 @@ const course = {
                     VALUES ('${req.body.date}','${req.body.time}','${req.body.id}','${course_name + course_number}',${teacher},'${req.body.course}','${req.body.finish}','${rows[0].course_id}')
 
                     `
-                    console.log(sql)
-                    // con.query(sql, (err, rows) => {
-                    //     if (err) {
-                    //         res.json({ "狀態": "失敗", "訊息": "課程新增失敗，請再重試一次 !" })
+                    // console.log(sql)
+                    con.query(sql, (err, rows) => {
+                        if (err) {
+                            res.json({ "狀態": "失敗", "訊息": "課程新增失敗，請再重試一次 !" })
 
-                    //     } else {
-                    //         res.json({ "狀態": "成功", "訊息": "課程新增成功 !" })
-                    //     }
+                        } else {
+                            res.json({ "狀態": "成功", "訊息": "課程新增成功 !" })
+                        }
 
-                    // })
+                    })
 
                 } else {
                     res.json({ "狀態": "失敗", "訊息": "此課程已經上完，無須補課!" })
