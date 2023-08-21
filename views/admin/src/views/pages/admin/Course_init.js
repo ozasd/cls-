@@ -164,7 +164,7 @@ export function Course_init() {
     const remove = (i) => {
         var std_id = document.getElementById("std_id" + i).textContent
         var course_id = document.getElementById("course_id" + i).textContent
-        console.log(std_id, course_id)
+        // console.log(std_id, course_id)
         var href = path + '/api-course_remove'
         fetch(href, {
             method: 'POST',

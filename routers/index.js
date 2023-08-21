@@ -33,5 +33,6 @@ router.post('/api-course_builder', urlencodedParser,courseBuilder.Course_builder
 router.post('/api-nextcourse_remove', urlencodedParser,courseBuilder.Course_remove)
 const userData = require('../controllers/userData')
 router.post('/api-userData', urlencodedParser,userData.userData)
+router.post('/api-userUpdate', urlencodedParser,userData.userUpdate)
 
 module.exports = router;

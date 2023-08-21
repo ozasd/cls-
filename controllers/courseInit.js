@@ -49,7 +49,7 @@ const course = {
         if (data.searach_type != '') {
             sql += `AND type = "${data.searach_type}" `
         }
-        sql += `order by  id DESC,std_id DESC`
+        sql += `order by type desc, id DESC,std_id DESC`
         con.query(sql, (err, rows) => {
             if (err) {
                 console.log(err)

@@ -60,9 +60,20 @@ export function Sidebar() {
                             </Link>
                         </>
                     )}
-                    <Link to='/Course_time' onClick={() => {  }} className=' text-decoration-none'>
-                        <p className='fs-6  horver-success text-white-50 py-2 ps-3 border-start border-4 border-success '>學生上課時間</p>
-                    </Link>
+                    {status === 4 ? (
+                        <>
+                            <Link to='/Course_time' onClick={() => { setstatus(4) }} className=' text-decoration-none'>
+                                <p className='fs-6   text-white py-2 ps-3 bg-success ' style={{ borderRadius: "15px" }}>學生上課時間</p>
+                            </Link>
+                        </>
+                    ) : (
+                        <>
+                            <Link to='/Course_time' onClick={() => {setstatus(4) }} className=' text-decoration-none'>
+                                <p className='fs-6  horver-success text-white-50 py-2 ps-3 border-start border-4 border-success '>學生上課時間</p>
+                            </Link>
+                        </>
+                    )}
+
 
 
                 </div>

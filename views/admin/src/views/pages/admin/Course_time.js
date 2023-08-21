@@ -110,13 +110,27 @@ export function Course_time() {
         var second_class1 = document.getElementById('second_class1').value
         var second_class2 = document.getElementById('second_class2').value
         var identity = document.getElementById('identity').value
-        console.log(user_id)
-        console.log(first_class1)
-        console.log(first_class2)
-        console.log(second_class1)
-        console.log(second_class2)
-        console.log(identity)
+        var href = path + '/api-userUpdate'
+        // console.log(weekRange[1])
+        fetch(href, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+                'user_id': user_id,
+                'first_class':first_class1+first_class2,
+                'second_class': second_class1+second_class2,
+                'identity': identity,
+            })
+        }).then(response => response.json())
+        .then(data => {
+            alert(data['訊息'])
+            fetchdata()
+        }).catch((err)=>{
+            alert(err)
+            fetchdata()
 
+        })
+        
     }
 
 
@@ -173,7 +187,6 @@ export function Course_time() {
                         {userData != 'null' ? (
                             <>
                                 {userData["user_id"].map((item, i) => (
-                                    <>
                                         <div key={i} className="row border my-2 rounded-pill  item-hover p-2 py-3">
                                             <div className="col-md-1">
                                                 <p className="fs-5 my-2 text-end">{userData["fullname"][i].slice(0, 3)}</p>
@@ -252,7 +265,6 @@ export function Course_time() {
                                                 <button onClick={() => { userUpdate()}} className='btn btn-secondary rounded-pill'>修改</button>
                                             </div>
                                         </div>
-                                    </>
                                 ))}
                             </>
                         ) : (

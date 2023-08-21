@@ -129,7 +129,7 @@ export function Course_manage() {
             var date = document.getElementById('date' + i).value
             var time = document.getElementById('time' + i).value
             var course_id = document.getElementById('course_id' + i).value
-            console.log("星期" + weekNumber(date) + " " + time)
+            // console.log("星期" + weekNumber(date) + " " + time)
             var href = path + '/api-courseUpdate'
 
             fetch(href, {
