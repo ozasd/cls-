@@ -3,10 +3,8 @@ const con = require("../database/db")
 const query = util.promisify(con.query).bind(con);
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
 const login = {
     loginData: (req, res) => {
-        
         con.query('SELECT nickname,pwd,identity,user_id FROM cls_user WHERE act = ? ', req.body.user, function (err, rows) {
             if (err) {
                 console.log("SQL ERROR")
@@ -56,9 +54,7 @@ const login = {
                         res.json({
                             "狀態": false
                         })
-
                     }
-
                 }
             }
         })
@@ -78,7 +74,6 @@ const login = {
 
             }
         })
-
     }
 }
 

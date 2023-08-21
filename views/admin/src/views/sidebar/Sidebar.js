@@ -60,8 +60,11 @@ export function Sidebar() {
                             </Link>
                         </>
                     )}
+                    <Link to='/Course_time' onClick={() => {  }} className=' text-decoration-none'>
+                        <p className='fs-6  horver-success text-white-50 py-2 ps-3 border-start border-4 border-success '>學生上課時間</p>
+                    </Link>
 
-                    
+
                 </div>
             </div>
             <div className='row gx-1 border-top p-1  align-content-center' style={{ height: "10%" }}>

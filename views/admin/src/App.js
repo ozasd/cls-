@@ -10,6 +10,7 @@ import { setLogin } from './views/DataSlice'
 import {Error404} from './views/pages/user/Error404'
 import {Course_builder} from './views/pages/admin/Course_builder'
 import {Course_init} from './views/pages/admin/Course_init'
+import {Course_time} from './views/pages/admin/Course_time'
 const ipconfig = require('./ipconfig')
 const path = ipconfig.webhost + ":" + ipconfig.port
 function App() {
@@ -58,6 +59,10 @@ function App() {
                   <Route path='/' element={<Course_manage />}></Route>
                   <Route path='/Course_builder' element={<Course_builder />}></Route>
                   <Route path='/Course_init' element={<Course_init />}></Route>
+                  <Route path='/Course_time' element={<Course_time />}></Route>
+
+
+                  
                 </Route>
               </>
             ) : (

@@ -23,7 +23,6 @@ const course = {
                 if(rows.length != 0){
                     // 找到上課資料
                     var course_name = rows[0].class_id.slice(0,-2)
-
                     var course_number = parseInt(rows[0].class_id.slice(-2))+1
                     if(course_number < 10){
                         course_number = "0"+String(course_number)
@@ -36,7 +35,6 @@ const course = {
                 if (teacher == '未完成'){
                     teacher = null
                 } 
-
                 var sql_type = `
                 SELECT * 
                 FROM hct_cls.course_list
@@ -58,15 +56,10 @@ const course = {
                         } else {
                             res.json({ "狀態": "成功", "訊息": "課程新增成功 !" })
                         }
-
                     })
                 })
-                
-                
             }
         })
-
-
     },
     courseAdd: (req, res) => {
         console.log('courseAdd')
@@ -79,7 +72,6 @@ const course = {
         WHERE course_record.class_id = course_detail.class_id 
         and course_record.std_id = ${data.id}
         and course_record.type_id = ${data.course}
-        
         order by  class_date DESC , class_time DESC  LIMIT 1
         `
         // and course_record.finish = 1
@@ -242,33 +234,22 @@ const course = {
         })
     },
     courseData: (req, res) => {
-
         console.log('Show Course Data')
         var searchtime = req.body.searchtime
-
-
         var sql_time = null
-        // console.log(req.body)
         if (searchtime != 'null') {
-            console.log(searchtime)
             sql_time = `WHERE class_date = '${searchtime}'`
-
         } else {
             var start = req.body.start
             var end = req.body.end
             sql_time = `WHERE class_date BETWEEN '${start}' AND '${end}'`
         }
-
-        // console.log(req.body)
         if (req.body.searchfinish != 'null') {
             sql_time += ` AND  finish = ${req.body.searchfinish}`
         }
         if (req.body.searchname != '') {
             sql_time += ` AND student.fullname like '%${req.body.searchname}%'`
-
-
         }
-
         sql = `
         SELECT id,course_record.class_date,course_record.class_time,course_record.std_id, student.fullname ,course_record.class_id, course_name,course_detail.class_title,teacher_id,teacher.nickname,course_record.type_id,IF(finish='0',null,finish) as finish
         FROM hct_cls.course_record 
@@ -277,12 +258,10 @@ const course = {
         left join course_detail on course_record.class_id =course_detail.class_id
         left join course_list on course_list.course_id = course_record.course_id
         `+
-
-            sql_time
-            +
-            `
+        sql_time
+        +
+        `
         order by class_date,class_time,student.fullname
-
         `
         // console.log(sql)
         con.query(sql, (err, rows) => {
@@ -300,7 +279,6 @@ const course = {
                     type_id: [],
                     finish: []
                 }
-
                 Array.from(rows).forEach((item, i) => {
                     course_record.id.push(item.id)
                     course_record.class_date.push(item.class_date)
@@ -313,7 +291,6 @@ const course = {
                     course_record.nickname.push(item.nickname)
                     course_record.type_id.push(item.type_id)
                     course_record.finish.push(item.finish)
-
                 })
                 // console.log(course_record)
                 res.json(course_record)
@@ -321,13 +298,7 @@ const course = {
             }else{
                 console.log("發生錯誤!")
             }
-
         })
-
-
-
-
-
     }
 }
 
