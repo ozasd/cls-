@@ -2,7 +2,7 @@ const con = require("../database/db")
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const userData = {
+const coursetime = {
     userUpdate: (req, res) => {
         var user_id = req.body.user_id
         var first_class = req.body.first_class
@@ -35,14 +35,42 @@ const userData = {
     userData: (req, res) => {
         console.log("userData")
         // console.log(req.body)
+        var time = req.body.time
+        var identity = req.body.identity
+        var name = req.body.name
+
+        var sqltime = ''
+        if(time != 'null'){
+            sqltime = `and (first_class like '${time}%' or second_class like '${time}%')`
+        }
+        var sqlidentity = ''
+        if(identity != 'null'){
+            sqlidentity = `where (cls_user.identity = ${identity})`
+        }else{
+            sqlidentity = `where (cls_user.identity = 1 or cls_user.identity = 4)`
+
+        }
+        var sqlname = ''
+        if(name != 'null'){
+            sqlname = `and fullname like '%${name}%'`
+        }
         var sql = `
         SELECT cls_user.user_id,fullname,first_class,second_class,cls_user.identity,depiction
         FROM hct_cls.cls_user_data
         left join cls_user on cls_user.user_id = cls_user_data.user_id
         left join cls_identity on cls_identity.identity = cls_user.identity
-        where (cls_user.identity = 1 or cls_user.identity = 4)
+        `
+        +
+        sqlidentity
+        +
+        sqltime
+        +
+        sqlname
+        +
+        `
         order by depiction,fullname
         `
+        // console.log(sql)
         con.query(sql, (err, rows) => {
             if (err) {
                 res.json({ "狀態": "失敗", "訊息": "資料庫撈取失敗! ，請確認網路環境是否良好" })
@@ -70,4 +98,4 @@ const userData = {
     }
 }
 
-module.exports = userData
+module.exports = coursetime

@@ -7,21 +7,20 @@ export function Course_time() {
 
     const [userData, setuserData] = useState('null')
     const fetchdata = async (e) => {
-        // var searchtime = (document.getElementById('search_time_id').value)
-        // var searchfinish = document.getElementById('search_finish_id').value
-        // var searchname = document.getElementById('search_name_id').value
-        // console.log(searchtime, searchfinish, searchname)
+        var time = document.getElementById('search_time').value
+        var identity = document.getElementById('search_identity').value
+        var name = document.getElementById('search_name').value
+        console.log(time, identity, name)
+        console.log(name == "")
         var href = path + '/api-userData'
         // console.log(weekRange[1])
         await fetch(href, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({
-                // 'start': weekRange[1][0],
-                // 'end': weekRange[1][6],
-                // 'searchtime': searchtime,
-                // 'searchfinish': searchfinish,
-                // 'searchname': searchname
+                'time': time,
+                'identity': identity,
+                'name': name,
             })
         }).then(response => response.json())
             .then(data => {
@@ -133,7 +132,20 @@ export function Course_time() {
         
     }
 
+    useEffect(() => {
+        const keyDownHandler = event => {
+            console.log('User pressed: ', event.key);
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                fetchdata()
+            }
+        };
+        document.addEventListener('keydown', keyDownHandler);
 
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [])
     return (
         <>
 
@@ -145,33 +157,33 @@ export function Course_time() {
                             <button onClick={() => { }} className='btn btn-secondary  rounded-pill'>新增學員</button>
                         </div>
                         <div className='col-md-2 d-flex justify-content-center py-2'>
-                            <select id='search_time_id' className='form-select'>
+                            <select id='search_time' className='form-select'>
                                 <option value='null'>--請選擇時間--</option>
-                                <option>星期一</option>
-                                <option>星期二</option>
-                                <option>星期三</option>
-                                <option>星期四</option>
-                                <option>星期五</option>
-                                <option>星期六</option>
-                                <option>星期日</option>
+                                <option value='1'>星期一</option>
+                                <option value='2'>星期二</option>
+                                <option value='3'>星期三</option>
+                                <option value='4'>星期四</option>
+                                <option value='5'>星期五</option>
+                                <option value='6'>星期六</option>
+                                <option value='7'>星期日</option>
 
                                 {/* <WeekDate /> */}
                             </select>
                         </div>
                         <div className='col-md-2 d-flex justify-content-center py-2'>
-                            <select id='search_finish_id' className='form-select'>
+                            <select id='search_identity' className='form-select'>
                                 <option value='null'>--請選擇狀態--</option>
-                                <option value='0'>在學</option>
-                                <option value='1'>停學</option>
-                                <option value='2'>凍結</option>
+                                <option value='1'>在期學生帳號</option>
+                                <option value='4'>非在期學生帳號</option>
+                                <option value='3'>凍結帳號</option>
 
                             </select>
                         </div>
                         <div className='col-md-3 d-flex justify-content-center py-2'>
-                            <input id='search_name_id' className='form-control ' placeholder="請輸入要找的學生姓名..." />
+                            <input id='search_name'  className='form-control ' placeholder="請輸入要找的學生姓名..." />
                         </div>
                         <div className='col-md-2 row justify-content-center py-2'>
-                            <button onClick={() => { }} className='btn bg-blue rounded-pill d-flex align-content-center justify-content-center'>
+                            <button onClick={() => {fetchdata() }} className='btn bg-blue rounded-pill d-flex align-content-center justify-content-center'>
                                 學生搜尋
                                 <span className="material-symbols-outlined mx-1">
                                     search

@@ -14,13 +14,13 @@ router.get('*', (req, res) => {
 const login = require('../controllers/login')
 router.post('/api-login', urlencodedParser,login.loginData);
 router.post('/api-check_token', urlencodedParser,login.check_token);
-const couseManage = require('../controllers/couseManage')
-router.post('/api-teacherData', urlencodedParser,couseManage.teacherData);
-router.post('/api-studentData', urlencodedParser,couseManage.studentData);
-router.post('/api-courseData', urlencodedParser,couseManage.courseData);
-router.post('/api-courseUpdate', urlencodedParser,couseManage.courseUpdate);
-router.post('/api-courseAdd', urlencodedParser,couseManage.courseAdd);
-router.post('/api-add_record', urlencodedParser,couseManage.add_record);
+const courseManage = require('../controllers/courseManage')
+router.post('/api-teacherData', urlencodedParser,courseManage.teacherData);
+router.post('/api-studentData', urlencodedParser,courseManage.studentData);
+router.post('/api-courseData', urlencodedParser,courseManage.courseData);
+router.post('/api-courseUpdate', urlencodedParser,courseManage.courseUpdate);
+router.post('/api-courseAdd', urlencodedParser,courseManage.courseAdd);
+router.post('/api-add_record', urlencodedParser,courseManage.add_record);
 
 const couseInit = require('../controllers/courseInit')
 router.post('/api-course_history', urlencodedParser,couseInit.course_history);
@@ -31,8 +31,8 @@ router.post('/api-course_remove', urlencodedParser,couseInit.course_remove);
 const courseBuilder = require('../controllers/courseBuilder')
 router.post('/api-course_builder', urlencodedParser,courseBuilder.Course_builder)
 router.post('/api-nextcourse_remove', urlencodedParser,courseBuilder.Course_remove)
-const userData = require('../controllers/userData')
-router.post('/api-userData', urlencodedParser,userData.userData)
-router.post('/api-userUpdate', urlencodedParser,userData.userUpdate)
+const coursetime = require('../controllers/coursetime')
+router.post('/api-userData', urlencodedParser,coursetime.userData)
+router.post('/api-userUpdate', urlencodedParser,coursetime.userUpdate)
 
 module.exports = router;
