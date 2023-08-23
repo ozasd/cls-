@@ -111,10 +111,10 @@ const Course_builder = {
                 Array.from(rows).forEach((item, i) => {
                     var datetime = null
                     if (item.type_id == 1) {
-                        console.log("程式課")
+                        // console.log("程式課")
                         datetime = exchange_time(item.first_class)
                     } else {
-                        console.log("綜合課")
+                        // console.log("綜合課")
                         datetime = exchange_time(item.second_class)
                     }
                     var class_date = datetime['date']
@@ -135,23 +135,31 @@ const Course_builder = {
                     }
                     Array.from(df['_data']["studentid"]).forEach((item, i) => {
                         if (item == std_id && type_id == (df['_data']["type_id"][i])) {
-                            var n = parseInt(class_id.slice(-2)) + 1 + i
+
+                
+                            var n = parseInt(class_id.slice(-2)) + 1 
                             if (n < 10) {
                                 n = "0" + String(n)
                             } else {
                                 n = String(n)
                             }
+                            var teacher_id = df['_data']["teacherid"][i]
+                            if( teacher_id == '未指定'){
+                                teacher_id = null
+                            }
+                           
+
                             data['class_date'].push(df['_data']["date"][i])
                             data['class_time'].push(df['_data']["time"][i])
                             data['std_id'].push(df['_data']["studentid"][i])
-                            data['teacher_id'].push(df['_data']["teacherid"][i])
+                            data['teacher_id'].push(teacher_id)
                             data['class_id'].push(class_id.slice(0, -2) + n)
                             data['type_id'].push(df['_data']["type_id"][i])
                             data['course_id'].push(course_id)
+
                         }
 
                     })
-                    // console.log(data)
                     var Sortdata = sortByDate(data)
                     Sortdata['class_id'].sort()
                     Array.from(Sortdata['class_id']).forEach((item,i)=>{
@@ -159,7 +167,7 @@ const Course_builder = {
                         insert into course_record (class_date,class_time,std_id,class_id,teacher_id,type_id,finish,course_id,comment)
                         values('${Sortdata['class_date'][i]}','${Sortdata['class_time'][i]}','${Sortdata['std_id'][i]}','${Sortdata['class_id'][i]}',${Sortdata['teacher_id'][i]},'${Sortdata['type_id'][i]}','0','${Sortdata['course_id'][i]}',"#自動生成課表")
                         ` 
-                        // console.log(sql)
+                        console.log(sql)
                         con.query(sql,(err,rows)=>{
                             if(!err){
                                 console.log("新增成功 !") 

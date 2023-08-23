@@ -226,7 +226,7 @@ export function Course_builder() {
                             <div className='row h-25 border-bottom align-content-center'>
                                 <h1 className='text-center fw-bold my-3 text-secondary'>準 備 生 成 下 週 課 表</h1>
                                 <p className="my-0 text-center fw-bold fs-6">{date_change(weekDay[0][0])}  ~  {date_change(weekDay[6][0])}</p>
-                                <p className='text-secondary fw-bold m-0  border-start border-3 border-success'>新增學生補課</p>
+                                <p className='text-secondary fw-bold m-0  border-start border-3 border-success'>新增學生下週補課</p>
                             </div>
                             <div className="row h-50 overflow-auto">
                                 <div className="col-md-12 ">
@@ -259,7 +259,11 @@ export function Course_builder() {
                             </div>
                             <div className="row h-25  justify-content-between ">
                                 <div className="col-md-12 ">
+
                                     <div className="row border-top  h-100 justify-content-center align-content-center  mt-2  ">
+                                        <div className="col-md-12">
+                                            <p className="text-center text-danger">* 每位學生的每堂課限補課一次，如:程式課下週限補一次，如需更多，等自動排課完再手動新增 !</p>
+                                            </div>
                                         <div className="col-md-2">
                                             <div className="row gx-1">
                                                 <select onChange={(e) => { setstd(e.target.value) }} className="btn border" >
