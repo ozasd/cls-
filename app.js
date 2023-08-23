@@ -28,6 +28,7 @@ console.log("create https server step...");
 
 const con = require("./database/db")
 const webconfig = require("./webconfig")
+
 con.connect(function (err) {
     if (err) {
         console.log('資料庫:connecting error');
