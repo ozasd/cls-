@@ -5,6 +5,7 @@ import { Course_manage } from './Next_Course_manage'
 
 const ipconfig = require('../../../ipconfig')
 const path = ipconfig.webhost + ":" + ipconfig.port
+
 function displayWeekDates() {
     // 取得今天的日期
     var today = new Date();

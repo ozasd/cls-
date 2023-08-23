@@ -6,9 +6,9 @@ const router = express.Router();
 
 
 
-router.get('/', (req, res) => {
+router.get('*', (req, res) => {
     console.log('有人登陸了 Login 管理平台')
-    res.sendFile(path.join(__dirname, '/views/admin/build', 'index.html'));
+    res.sendFile(path.join(__dirname, '..','/views/admin/build', 'index.html'));
 
 });
 const login = require('../controllers/login')

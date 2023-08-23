@@ -1,6 +1,8 @@
 const path = {
     // web setting
     "webhost":"127.0.0.1",
+    // "webhost":"localhost",
+
     "port":"443",
     // database setting
     "host" : "35.201.246.163",

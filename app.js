@@ -11,7 +11,7 @@ const https = require('node:https');
 app.set('view engine', 'jsx')
 app.use(cors())
 app.use(express.static(__dirname + '/public'));
-app.use(express.static(__dirname + '/views/admin/build'));
+app.use('/',express.static(__dirname + '/views/admin/build'));
 
 
 var apiRouter = require('./routers/index')
