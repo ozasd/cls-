@@ -17,3 +17,5 @@ user-upload
 # EX. user=10之使用者的頭像上傳位置--->user-upload/avatar/10.jpg
 
 # 其餘日後擴充
+/webconfig.js
+/views/admin/src/ipconfig.js
